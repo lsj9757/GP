@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import Test from './Test'
+import Test from './Test';
+import './Life.less';
+import {Button} from 'antd';
 
 export default class TestParent extends Component {
     constructor(props) {
@@ -17,8 +19,9 @@ export default class TestParent extends Component {
 
     render() {
         return (
-            <div>
+            <div className="content">
                 <p>this is parent</p>
+                <Button>11</Button>
                 <button onClick={this.handleAdd.bind(this)}>click</button>
                 <p>{this.state.count}</p>
                 <Test name=" lsj"></Test>
