@@ -10,10 +10,10 @@ export default class Admin extends Component {
   render() {
     return (
       <Row className="container">
-          <Col span={4} className="nav">
+          <Col span={4} className="container-nav">
             <Nav/>
           </Col>
-          <Col span={20} className="main">
+          <Col span={20} className="container-main">
             <Header/>
             <Content/>
             <Footer/>

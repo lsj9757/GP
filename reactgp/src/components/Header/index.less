@@ -1,3 +1,27 @@
 .header {
-    
+    &-top {
+        display: flex;
+        justify-content: flex-end;
+        height: 60px;
+        line-height: 60px;
+        padding-right: 30px;
+        a {
+            margin-left: 40px;
+        }
+    }
+    &-crumb {
+        height: 40px;
+        line-height: 40px;
+        padding: 0 20px;
+        border-top: 1px solid #f9c700;
+        &-title {
+            text-align: center; 
+        }
+        &-weather {
+            text-align: right;
+            &Time {
+                margin-right: 10px;
+            }
+        }
+    }
 }
