@@ -5,6 +5,7 @@ import Nav from './components/Nav';
 import Content from './components/Content';
 import { Row, Col } from 'antd';
 import './admin.less';
+import Home from './pages/home';
 
 export default class Admin extends Component {
   render() {
@@ -15,7 +16,8 @@ export default class Admin extends Component {
           </Col>
           <Col span={20} className="container-main">
             <Header/>
-            <Content/>
+            {/* <Content/> */}
+            <Home/>
             <Footer/>
           </Col>
       </Row>
