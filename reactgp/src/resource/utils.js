@@ -1,5 +1,4 @@
-export default {
-    
+export default {  
     //计算时间
     formateDate(time) {
         if (!time) return ''
