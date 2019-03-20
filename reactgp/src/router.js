@@ -11,11 +11,11 @@ export default class Router extends Component {
     return (
       <Routers>
           <App>
-            <Route path='/login' component={Login}></Route>
             <Route path='/admin' render={()=>
               <Admin>
                 <Switch>
                   <Route path="/admin/ui/buttons" component={Buttons}></Route>
+                  <Route path="/admin/form/login" component={Login}></Route>
                   <Route component={NoMatch}></Route>
                 </Switch>
               </Admin>
