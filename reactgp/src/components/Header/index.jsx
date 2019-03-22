@@ -63,7 +63,7 @@ export default class Header extends Component {
                     </Col>
                     <Col span={20} className="header-crumb-weather">
                         <span className="header-crumb-weatherTime">{this.state.sysTime}</span>
-                        <span className="header-crumb-weatherDetail">{this.state.city}  {this.state.weather}  {this.state.temperature}°</span>
+                        <span className="header-crumb-weatherDetail">{this.state.city}  {this.state.weather}  {this.state.temperature}°C</span>
                     </Col>
                 </Row>
             </div>
