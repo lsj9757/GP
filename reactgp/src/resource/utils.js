@@ -5,6 +5,7 @@ export default {
         let date = new Date(time)
         return `${date.getFullYear()}-${(date.getMonth()+1)}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     },
+    //分页
     pagination(data,callback){
         return {
             onChange:(current)=>{
@@ -17,7 +18,7 @@ export default {
             showTotal:()=>{
                 return `共${data.result.total_count}条`
             },
-            showQuickJumper:true
+            showQuickJumper:true //跳页
         }
     },
 }

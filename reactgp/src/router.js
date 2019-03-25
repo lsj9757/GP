@@ -5,6 +5,7 @@ import Admin from './admin'
 import Login from './pages/login'
 import NoMatch from './pages/noMatch'
 import Buttons from './pages/ui/buttons'
+import City from './pages/city'
 
 export default class Router extends Component {
   render() {
@@ -16,6 +17,7 @@ export default class Router extends Component {
                 <Switch>
                   <Route path="/admin/ui/buttons" component={Buttons}></Route>
                   <Route path="/admin/form/login" component={Login}></Route>
+                  <Route path="/admin/city" component={City}></Route>
                   <Route component={NoMatch}></Route>
                 </Switch>
               </Admin>

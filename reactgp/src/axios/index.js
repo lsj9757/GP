@@ -22,7 +22,7 @@ export default class Axios {
             loading = document.getElementById('ajaxLoading');
             loading.style.display = 'block';
         }
-        let baseApi = 'https://www.easy-mock.com/mock/5c9235393cffed483bb0a20e/mockapi'; //这边用的是easymock的数据格式
+        let baseApi = 'https://www.easy-mock.com/mock/5a7278e28d0c633b9c4adbd7/api'; //这边用的是easymock的数据格式
         return new Promise((resolve,reject)=>{
             axios({
                 url:options.url,
@@ -35,9 +35,9 @@ export default class Axios {
                     loading = document.getElementById('ajaxLoading');
                     loading.style.display = 'none';
                 }
-                if (response.status == '200'){
+                if (response.status === 200){
                     let res = response.data;
-                    if (res.code == '0'){ //这边用的是easymock的数据格式
+                    if (res.code === '0'){ //这边用的是easymock的数据格式
                         resolve(res);
                     }else{
                         Modal.info({
