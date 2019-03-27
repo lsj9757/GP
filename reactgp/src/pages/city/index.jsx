@@ -21,7 +21,7 @@ export default class City extends Component{
     }
 
     // 默认请求接口数据
-    requestList = ()=>{
+    requestList = () =>{
         let _this = this;
         Axios.ajax({
             url: '/open_city',
@@ -40,7 +40,6 @@ export default class City extends Component{
                 pagination:Utils.pagination(res,(current)=>{
                     _this.params.page = current;
                     _this.requestList();
-                    console.log(current)
                 })
             })
         })

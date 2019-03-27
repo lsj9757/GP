@@ -8,3 +8,12 @@
         margin-right: -2px;
     }
 }
+// 通用清除浮动
+.clearfix{
+    &::after{
+        content:' ';
+        clear:both;
+        display: block;
+        visibility: hidden;
+    }
+}
