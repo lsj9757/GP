@@ -51,21 +51,34 @@ export default class Header extends Component {
     }
 
     render() {
+        const { menuName, menuType } = this.props;
         return (
             <div className="header">
                 <Row className="header-top">
-                    <span>你好，牛逼的{this.state.username}</span>
-                    <a href="#">退出</a>  
-                </Row>
-                <Row className="header-crumb">
-                    <Col span={4} className="header-crumb-title">
-                        首页
+                    {
+                        menuType?
+                            <Col span={6} className="header-top-logo">
+                                <img src="/assets/logo.jpg" alt="lsj"/>
+                                <span>LSJ 通用管理系统</span>
+                            </Col>:''
+                    }
+                    <Col span={menuType?18:24}>
+                        <span>你好，牛逼的{this.state.username}</span>
+                        <a href="#">退出</a>  
                     </Col>
-                    <Col span={20} className="header-crumb-weather">
-                        <span className="header-crumb-weatherTime">{this.state.sysTime}</span>
-                        <span className="header-crumb-weatherDetail">{this.state.city}  {this.state.weather}  {this.state.temperature}°C</span>
-                    </Col>
                 </Row>
+                {
+                    menuType?'':
+                        <Row className="header-crumb">
+                            <Col span={4} className="header-crumb-title">
+                                首页
+                            </Col>
+                            <Col span={20} className="header-crumb-weather">
+                                <span className="header-crumb-weatherTime">{this.state.sysTime}</span>
+                                <span className="header-crumb-weatherDetail">{this.state.city}  {this.state.weather}  {this.state.temperature}°C</span>
+                            </Col>
+                        </Row>
+                }
             </div>
         )
     }

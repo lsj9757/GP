@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './index.less';
 import MenuConfig from '../../resource/menuConfig';
 import { NavLink } from 'react-router-dom';
-import { Menu, Icon } from 'antd';
+import { Menu } from 'antd';
 
 const SubMenu = Menu.SubMenu;
 

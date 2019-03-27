@@ -2,10 +2,25 @@
     background-color: #fff;
     &-top {
         display: flex;
-        justify-content: flex-end;
+        // justify-content: flex-end;
+        text-align: right;
         height: 60px;
         line-height: 60px;
-        padding-right: 30px;
+        padding: 0 30px;
+        // common里header-top的样式修改
+        &-logo{
+            padding-left: 30px; 
+            line-height: 60px;
+            text-align: left;
+            font-size: 18px;
+            img{
+                height: 40px;
+                vertical-align: middle;
+            }
+            span{
+                margin-left: 5px;
+            }
+        }
         a {
             margin-left: 30px;
         }
@@ -35,5 +50,16 @@
                 margin-right: 10px;
             }
         }
+    }
+}
+
+// common里面的header整体样式
+.simple-page {
+    .header-top {
+      background:#1DA57A;
+      color:#fff;
+      a {
+        color:#f9c700;
+      }
     }
 }
