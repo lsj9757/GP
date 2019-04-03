@@ -8,6 +8,7 @@ import NoMatch from './pages/noMatch'
 import City from './pages/city'
 import Detail from './pages/order/detail'
 import Order from './pages/order'
+import User from './pages/user'
 
 export default class Router extends Component {
   render() {
@@ -20,6 +21,7 @@ export default class Router extends Component {
                   <Route path="/admin/form/login" component={Login}></Route>
                   <Route path="/admin/order" component={Order}></Route>
                   <Route path="/admin/city" component={City}></Route>
+                  <Route path="/admin/user" component={User}></Route>
                   <Route component={NoMatch}></Route>
                 </Switch>
               </Admin>

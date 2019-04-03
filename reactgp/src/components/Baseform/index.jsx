@@ -10,16 +10,16 @@ class Baseform extends Component {
             
         };
     }
-    handleFilterSubmit = ()=>{
+    handleFilterSubmit = () => {
         let fieldsValue = this.props.form.getFieldsValue();
         this.props.filterSubmit(fieldsValue);
     }
 
-    reset = ()=>{
+    reset = () => {
         this.props.form.resetFields();
     }
 
-    initFormList = ()=>{
+    initFormList = () => {
         const { getFieldDecorator } = this.props.form;
         const formList = this.props.formList; // 获取传过来的参数
         const formItemList = [];
@@ -34,7 +34,7 @@ class Baseform extends Component {
                     const begin_time = <FormItem label="订单时间" key={'begin_time'}>
                         {
                             getFieldDecorator('begin_time')(
-                                <DatePicker showTime={true} placeholder={placeholder} format="YYYY-MM-DD HH:mm:ss"/>
+                                <DatePicker style={{ width: width }} showTime={true} placeholder={placeholder} format="YYYY-MM-DD HH:mm:ss"/>
                             )
                         }
                     </FormItem>;
@@ -42,7 +42,7 @@ class Baseform extends Component {
                     const end_time = <FormItem label="~" colon={false} key={'end_time'}>
                         {
                             getFieldDecorator('end_time')(
-                                <DatePicker showTime={true} placeholder={placeholder} format="YYYY-MM-DD HH:mm:ss" />
+                                <DatePicker style={{ width: width }} showTime={true} placeholder={placeholder} format="YYYY-MM-DD HH:mm:ss" />
                             )
                         }
                     </FormItem>;
@@ -53,7 +53,7 @@ class Baseform extends Component {
                             getFieldDecorator([field],{
                                 initialValue: initialValue
                             })(
-                                <Input type="text" placeholder={placeholder} />
+                                <Input style={{ width: width }} type="text" placeholder={placeholder} />
                             )
                         }
                     </FormItem>;

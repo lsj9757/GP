@@ -114,11 +114,11 @@ export default class City extends Component{
             }
         ]
         return (
-            <div>
+            <div className="city">
                 <Card>
                     <FilterForm />
                 </Card>
-                <Card style={{marginTop:5}}>
+                <Card style={{marginTop:10}}>
                     <Button type="primary" onClick={this.handleOpenCity}>开通城市</Button>
                 </Card>
                 <div className="content-wrap">

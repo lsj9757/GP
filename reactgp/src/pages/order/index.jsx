@@ -26,10 +26,11 @@ export default class Order extends Component {
             field:'city',
             placeholder:'全部',
             initialValue:'1',
-            width:80,
+            width:100,
             list: [{ id: '0', name: '全部' }, { id: '1', name: '北京' }, { id: '2', name: '天津' }, { id: '3', name: '上海' }]
         },
         {
+            width:170,
             type: '时间查询'
         },
         {
@@ -38,7 +39,7 @@ export default class Order extends Component {
             field:'order_status',
             placeholder: '全部',
             initialValue: '1',
-            width: 80,
+            width: 100,
             list: [{ id: '0', name: '全部' }, { id: '1', name: '进行中' }, { id: '2', name: '结束行程' }]
         }
     ]
@@ -211,7 +212,7 @@ export default class Order extends Component {
                 </Card>
                 <Card style={{marginTop:10}}>
                     <Button type="primary" onClick={this.openOrderDetail}>订单详情</Button>
-                    <Button type="primary" style={{marginLeft:10}} onClick={this.handleConfirm}>结束订单</Button>
+                    <Button type="primary" onClick={this.handleConfirm}>结束订单</Button>
                 </Card>
                 <div className="content-wrap">
                     <Table
