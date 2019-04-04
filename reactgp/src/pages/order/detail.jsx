@@ -26,7 +26,7 @@ export default class Detail extends Component {
                 }
             }
         }).then((res)=>{
-            if(res.code === '0'){
+            if(res.code == '0'){
                 this.setState({
                     orderInfo:res.result
                 })

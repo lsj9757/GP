@@ -37,7 +37,7 @@ export default class Axios {
                 }
                 if (response.status === 200){
                     let res = response.data;
-                    if (res.code === '0'){ //这边用的是easymock的数据格式
+                    if (res.code == '0'){ //这边用的是easymock的数据格式
                         resolve(res);
                     }else{
                         Modal.info({

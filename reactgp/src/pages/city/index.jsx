@@ -53,7 +53,7 @@ export default class City extends Component{
     }
     // 城市开通提交
     handleSubmit = ()=>{
-        let cityInfo = this.cityForm.props.form.getFieldsValue();
+        let cityInfo = this.cityForm.props.form.getFieldsValue(); //获取城市开通表单数据
         console.log(cityInfo);
         Axios.ajax({
             url:'/city/open',
@@ -61,7 +61,7 @@ export default class City extends Component{
                 params:cityInfo
             }
         }).then((res)=>{
-            if(res.code === '0'){
+            if(res.code == '0'){
                 message.success('开通成功');
                 this.setState({
                     isShowOpenCity:false
@@ -82,7 +82,7 @@ export default class City extends Component{
                 title: '用车模式',
                 dataIndex: 'mode',
                 render(mode){
-                    return mode ===1 ?'停车点':'禁停区';
+                    return mode === 1 ?'停车点':'禁停区';
                 }
             }, {
                 title: '营运模式',
