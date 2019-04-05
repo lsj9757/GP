@@ -12,7 +12,8 @@ export default class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            list:[]
+            list:[],
+            userInfo:{}
         };
     }
 
@@ -65,7 +66,7 @@ export default class User extends Component {
                 return;
             }
             this.setState({
-                title:type=='edit'?'编辑用户':'查看详情',
+                title:type =='edit'?'编辑用户':'查看详情',
                 isVisible:true,
                 userInfo:item,
                 type
@@ -78,8 +79,9 @@ export default class User extends Component {
                 })
                 return;
             }
-            Utils.ui.confirm({
-                text:'确定要删除此用户吗？',
+            Modal.confirm({
+                title: '确定要删除此用户吗？',
+                content: `是否删除员工 ${item.username} 的信息?`,
                 onOk:()=>{
                     Axios.ajax({
                         url:'/user/delete',
@@ -105,28 +107,23 @@ export default class User extends Component {
     handleSubmit = () => {
         let type = this.state.type;
         let data = this.userForm.props.form.getFieldsValue();
-        // 若为detail就不需要网络请求
-        if (type != 'detail') {
-            Axios.ajax({
-                url:type == 'create'?'/user/add':'/user/edit',
-                data:{
-                    params:{
-                        ...data
-                    }
+        Axios.ajax({
+            url:type == 'create'?'/user/add':'/user/edit',
+            data:{
+                params:{
+                    ...data
                 }
-            }).then((res)=>{
-                if(res.code == '0'){
-                    let tip = type == 'create'?'创建成功':'修改成功';
-                    message.success(tip);
-                    this.setState({
-                        isVisible:false
-                    })
-                    this.requestList();
-                }
-            })
-        }
+            }
+        }).then((res)=>{
+            if(res.code == '0'){
+                let tip = type == 'create'?'创建成功':'修改成功';
+                message.success(tip);
+                this.requestList();
+            }
+        })
         this.setState({
-            isVisible:false
+            isVisible:false,
+            userInfo:''
         })
     }
 
@@ -190,6 +187,13 @@ export default class User extends Component {
           }
         ];
 
+        let footer = {}
+        if (this.state.type == 'detail') {
+            footer = {
+                footer: null
+            }
+        }
+
         return (
             <div className="user">
                 <Card style={{marginTop:10}}>
@@ -219,6 +223,7 @@ export default class User extends Component {
                             userInfo:''
                         })
                     }}
+                    {...footer}
                 >
                     <UserForm userInfo={this.state.userInfo} type={this.state.type} wrappedComponentRef={(inst) => this.userForm = inst }/>
                 </Modal>
@@ -228,7 +233,7 @@ export default class User extends Component {
 }
 class UserForm extends React.Component{
 
-    getState = (state)=>{
+    getState = (state) => {
         return {
             '1':'咸鱼一条',
             '2':'风华浪子',
@@ -251,7 +256,7 @@ class UserForm extends React.Component{
                 <FormItem label="姓名" {...formItemLayout}>
                     {
                         userInfo && type=='detail'?userInfo.username:
-                        getFieldDecorator('user_name',{
+                        getFieldDecorator('username',{
                             initialValue:userInfo.username
                         })(
                             <Input type="text" placeholder="请输入姓名"/>

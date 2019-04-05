@@ -74,6 +74,28 @@ class Baseform extends Component {
                         }
                     </FormItem>;
                     formItemList.push(SELECT)
+                } else if (item.type === '城市') {
+                    const cityList = [
+                        { id: '0', name: '全部' }, 
+                        { id: '1', name: '北京' }, 
+                        { id: '2', name: '天津' }, 
+                        { id: '3', name: '上海' }
+                    ]
+                    const CITY = <FormItem label={'城市'} key={field+' lsj'}>
+                        {
+                            getFieldDecorator(['city_id'], {
+                                initialValue: '0'
+                            })(
+                                <Select
+                                    style={{ width: width || 100 }}
+                                    placeholder={'全部'}
+                                >
+                                    {Utils.getOptionList(cityList)}
+                                </Select>
+                            )
+                        }
+                    </FormItem>;
+                    formItemList.push(CITY)
                 } else if (item.type === 'CHECKBOX') {
                     const CHECKBOX = <FormItem label={label} key={field+' lsj'}>
                         {

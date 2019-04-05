@@ -11,7 +11,8 @@ export default class Order extends Component {
         super(props);
         this.state = {
             orderInfo:{},
-            orderConfirmVisble:false
+            orderConfirmVisble:false,
+            list:[]
         };
     }
     params = {
@@ -21,13 +22,7 @@ export default class Order extends Component {
     // Baseform组件参数
     formList = [
         {
-            type:'SELECT',
-            label:'城市',
-            field:'city',
-            placeholder:'全部',
-            initialValue:'1',
-            width:100,
-            list: [{ id: '0', name: '全部' }, { id: '1', name: '北京' }, { id: '2', name: '天津' }, { id: '3', name: '上海' }]
+            type:'城市',
         },
         {
             width:170,
@@ -49,8 +44,8 @@ export default class Order extends Component {
     }
 
     // Baseform组件参数
-    handleFilter = (params) => {
-        this.params = params;
+    handleFilter = (filterParams) => {
+        this.params = filterParams;
         this.requestList();
     }
 

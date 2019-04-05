@@ -9,6 +9,7 @@ import City from './pages/city'
 import Detail from './pages/order/detail'
 import Order from './pages/order'
 import User from './pages/user'
+import BikeMap from './pages/bikeMap'
 
 export default class Router extends Component {
   render() {
@@ -22,6 +23,7 @@ export default class Router extends Component {
                   <Route path="/admin/order" component={Order}></Route>
                   <Route path="/admin/city" component={City}></Route>
                   <Route path="/admin/user" component={User}></Route>
+                  <Route path="/admin/bikeMap" component={BikeMap}></Route>
                   <Route component={NoMatch}></Route>
                 </Switch>
               </Admin>
