@@ -37,10 +37,9 @@ export default class Detail extends Component {
 
     renderMap = (result) => {
         this.map = new window.BMap.Map("orderDetailMap"); // 创建地图实例  
-        // this.map.centerAndZoom('北京', 11);
         this.addMapControl(); //调用地图控件
         this.drawBikeRoute(result.position_list) //调用行驶路线(mock数据里是这个'position_list'参数)
-        this.drwaServiceArea(result.area)
+        this.drawServiceArea(result.area)
     }
 
     // 添加地图控件
@@ -67,7 +66,7 @@ export default class Detail extends Component {
                 anchor: new window.BMap.Size(18, 42)
             })
 
-            let startMarker = new window.BMap.Marker(startPoint, { icon: startIcon});
+            let startMarker = new window.BMap.Marker(startPoint, { icon: startIcon });
             this.map.addOverlay(startMarker);
 
             // 绘制结束坐标
@@ -97,7 +96,7 @@ export default class Detail extends Component {
     }
 
     // 绘制服务区
-    drwaServiceArea = (area)=>{
+    drawServiceArea = (area) => {
         // 连接路线图
         let trackPoint = [];
         for (let i = 0; i < area.length; i++) {
