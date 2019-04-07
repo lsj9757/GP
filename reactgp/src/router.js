@@ -10,6 +10,7 @@ import Detail from './pages/order/detail'
 import Order from './pages/order'
 import User from './pages/user'
 import BikeMap from './pages/bikeMap'
+import Permission from './pages/permission'
 import Bar from './pages/echarts/bar'
 import Pie from './pages/echarts/pie'
 import Line from './pages/echarts/line'
@@ -27,6 +28,7 @@ export default class Router extends Component {
                   <Route path="/admin/city" component={City}></Route>
                   <Route path="/admin/user" component={User}></Route>
                   <Route path="/admin/bikeMap" component={BikeMap}></Route>
+                  <Route path="/admin/permission" component={Permission}></Route>
                   <Route path="/admin/echarts/bar" component={Bar}></Route>
                   <Route path="/admin/echarts/pie" component={Pie}></Route>
                   <Route path="/admin/echarts/line" component={Line}></Route>

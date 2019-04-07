@@ -181,7 +181,7 @@ export default class Line extends Component {
                         notMerge={true}
                         lazyUpdate={true}
                         style={{
-                        height: 500
+                        height: 400
                     }}/>
                 </Card>
                 <Card title="折线图表之二" style={{marginTop:10}}>
@@ -191,7 +191,7 @@ export default class Line extends Component {
                         notMerge={true}
                         lazyUpdate={true}
                         style={{
-                        height: 500
+                        height: 400
                     }}/>
                 </Card>
                 <Card title="折线图表之三" style={{marginTop:10}}>
@@ -201,7 +201,7 @@ export default class Line extends Component {
                         notMerge={true}
                         lazyUpdate={true}
                         style={{
-                        height: 500
+                        height: 400
                     }}/>
                 </Card>
             </div> 

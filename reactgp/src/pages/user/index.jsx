@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Card, Button, Table, Form, Input, Checkbox,Select,Radio, Icon, message, Modal, DatePicker } from 'antd'
+import { Card, Button, Form, Input, Select, Radio, message, Modal, DatePicker } from 'antd'
 import Utils from '../../resource/utils';
 import Axios from '../../axios/index';
 import Etable from '../../components/Etable';
 import Moment from 'moment'
+import '../style/common.less';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -121,6 +123,7 @@ export default class User extends Component {
                 this.requestList();
             }
         })
+        this.userForm.props.form.resetFields(); // 重置表单
         this.setState({
             isVisible:false,
             userInfo:''
@@ -220,7 +223,7 @@ export default class User extends Component {
                         this.userForm.props.form.resetFields(); // 重置表单
                         this.setState({
                             isVisible:false,
-                            userInfo:''
+                            userInfo:'' // 保证在关闭员工详情的时候 重置表单
                         })
                     }}
                     {...footer}
@@ -231,7 +234,7 @@ export default class User extends Component {
         )
     }
 }
-class UserForm extends React.Component{
+class UserForm extends Component{
 
     getState = (state) => {
         return {
