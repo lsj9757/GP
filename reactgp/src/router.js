@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Routers, Route, Switch} from 'react-router-dom'
+import { BrowserRouter as Routers, Route, Switch, Redirect} from 'react-router-dom'
 import App from './App'
 import Admin from './admin'
 import Common from './common'
@@ -20,27 +20,30 @@ export default class Router extends Component {
     return (
       <Routers>
           <App>
-            <Route path='/admin' render={()=>
-              <Admin>
-                <Switch>
-                  <Route path="/admin/form/login" component={Login}></Route>
-                  <Route path="/admin/order" component={Order}></Route>
-                  <Route path="/admin/city" component={City}></Route>
-                  <Route path="/admin/user" component={User}></Route>
-                  <Route path="/admin/bikeMap" component={BikeMap}></Route>
-                  <Route path="/admin/permission" component={Permission}></Route>
-                  <Route path="/admin/echarts/bar" component={Bar}></Route>
-                  <Route path="/admin/echarts/pie" component={Pie}></Route>
-                  <Route path="/admin/echarts/line" component={Line}></Route>
-                  <Route component={NoMatch}></Route>
-                </Switch>
-              </Admin>
-            }></Route>
-            <Route path='/common' render={()=>
-              <Common>
-                <Route path="/common/order/detail/:orderId" component={Detail} />
-              </Common>
-            }></Route>
+            <Switch>
+              <Route path="/login" component={Login}/>
+              <Route path='/common' render={()=>
+                <Common>
+                  <Route path="/common/order/detail/:orderId" component={Detail} />
+                </Common>
+              }></Route>
+              <Route path='/' render={()=>
+                <Admin>
+                  <Switch>
+                    <Route path="/order" component={Order}></Route>
+                    <Route path="/city" component={City}></Route>
+                    <Route path="/user" component={User}></Route>
+                    <Route path="/bikeMap" component={BikeMap}></Route>
+                    <Route path="/permission" component={Permission}></Route>
+                    <Route path="/echarts/bar" component={Bar}></Route>
+                    <Route path="/echarts/pie" component={Pie}></Route>
+                    <Route path="/echarts/line" component={Line}></Route>
+                    <Redirect to="/home" />
+                    <Route component={NoMatch}></Route>
+                  </Switch>
+                </Admin>
+              }></Route>
+            </Switch>
           </App>
       </Routers>
     );
