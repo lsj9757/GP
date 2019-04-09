@@ -3,20 +3,37 @@ import './index.less';
 import MenuConfig from '../../resource/menuConfig';
 import { NavLink } from 'react-router-dom';
 import { Menu } from 'antd';
+import { connect } from 'react-redux'
+import { switchMenu } from './../../redux/action'
 
 const SubMenu = Menu.SubMenu;
 
-export default class Nav extends Component {
+class Nav extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+            currentKey: ''
         };
+    }
+
+    handleClick = ({item, key}) => {
+        if (key == this.state.currentKey) {
+            return false;
+        }
+        // dispatch事件派发，(通过action)自动调用reducer，通过reducer保存到store对象中
+        const { dispatch } = this.props;
+        dispatch(switchMenu(item.props.title));
+
+        this.setState({
+            currentKey: key
+        })
     }
 
     componentWillMount() {
         const menuTreeNode = this.renderMenu(MenuConfig)
+        let currentKey = window.location.pathname
         this.setState({
+            currentKey, 
             menuTreeNode
         })
     }
@@ -45,6 +62,8 @@ export default class Nav extends Component {
                     <h1>lsj</h1>
                 </div>
                 <Menu
+                    onClick={this.handleClick}
+                    selectedKeys={[this.state.currentKey]}
                     theme="dark"
                 >
                     { this.state.menuTreeNode }
@@ -53,3 +72,4 @@ export default class Nav extends Component {
         )
     }
 }
+export default connect()(Nav)
