@@ -31,6 +31,7 @@ export default class Detail extends Component {
                     orderInfo:res.result
                 })
                 this.renderMap(res.result);
+                // this.getGeolocation()
             }
         })
     }
@@ -112,6 +113,25 @@ export default class Detail extends Component {
             fillOpacity: 0.4
         })
         this.map.addOverlay(polygon);
+    }
+
+    getGeolocation = () => {
+        var map = new window.BMap.Map("orderDetailMap");
+        var point = new window.BMap.Point(116.331398,39.897445);
+        map.centerAndZoom(point,12);
+
+        var geolocation = new window.BMap.Geolocation();
+        geolocation.getCurrentPosition(function(r){
+            if(this.getStatus() == window.BMAP_STATUS_SUCCESS){
+                var mk = new window.BMap.Marker(r.point);
+                map.addOverlay(mk);
+                map.panTo(r.point);
+                alert('您的位置：'+r.point.lng+','+r.point.lat);
+            }
+            else {
+                alert('failed'+this.getStatus());
+            }        
+        });
     }
 
     render() {

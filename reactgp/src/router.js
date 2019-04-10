@@ -3,6 +3,7 @@ import { BrowserRouter as Routers, Route, Switch, Redirect} from 'react-router-d
 import App from './App'
 import Admin from './admin'
 import Common from './common'
+import Client from './client'
 import Login from './pages/login'
 import NoMatch from './pages/noMatch'
 import City from './pages/city'
@@ -14,6 +15,8 @@ import Permission from './pages/permission'
 import Bar from './pages/echarts/bar'
 import Pie from './pages/echarts/pie'
 import Line from './pages/echarts/line'
+import ClientLogin from './pages/client/clientLogin'
+import ClientRes from './pages/client/clientRes'
 
 export default class Router extends Component {
   render() {
@@ -22,6 +25,12 @@ export default class Router extends Component {
           <App>
             <Switch>
               <Route path="/login" component={Login}/>
+              <Route path="/client" render={()=>
+                <Client>
+                  <Route path="/client/clientLogin" component={ClientLogin} />
+                  <Route path="/client/clientRes" component={ClientRes} />
+                </Client>
+              }></Route>
               <Route path='/common' render={()=>
                 <Common>
                   <Route path="/common/order/detail/:orderId" component={Detail} />

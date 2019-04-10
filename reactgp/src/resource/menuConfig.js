@@ -8,6 +8,24 @@ const menuList = [
         key: '/login'
     },
     {
+        title: '客户',
+        key: '/client',
+        children: [
+            {
+                title: '登陆',
+                key: '/client/clientLogin'
+            },
+            {
+                title: '饼图',
+                key: '/echarts/pie'
+            },
+            {
+                title: '折线图',
+                key: '/echarts/line'
+            },
+        ]
+    },
+    {
         title: '城市管理',
         key: '/city'
     },
@@ -18,10 +36,6 @@ const menuList = [
             {
                 title: '订单详情',
                 key: 'detail'
-            },
-            {
-                title: '结束订单',
-                key: 'finish'
             }
         ]
     },
