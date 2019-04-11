@@ -17,6 +17,7 @@ import Pie from './pages/echarts/pie'
 import Line from './pages/echarts/line'
 import ClientLogin from './pages/client/clientLogin'
 import ClientRes from './pages/client/clientRes'
+import ClientNow from './pages/client/clientNow'
 
 export default class Router extends Component {
   render() {
@@ -29,6 +30,7 @@ export default class Router extends Component {
                 <Client>
                   <Route path="/client/clientLogin" component={ClientLogin} />
                   <Route path="/client/clientRes" component={ClientRes} />
+                  <Route path="/client/clientNow" component={ClientNow} />
                 </Client>
               }></Route>
               <Route path='/common' render={()=>

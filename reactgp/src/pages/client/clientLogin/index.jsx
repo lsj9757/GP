@@ -12,7 +12,7 @@ class ClientLogin extends Component {
     }
 
     handleSubmit = () => {
-        this.props.history.push({ pathname : '/client/clientRes' ,query : { day: 'Friday'} })
+        this.props.history.push({ pathname : '/client/clientNow' ,query : { day: 'Friday'} })
     }
 
     render() {

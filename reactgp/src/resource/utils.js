@@ -25,6 +25,7 @@ export default {
             showQuickJumper:true //跳页
         }
     },
+    // 分解多个options
     getOptionList(data){
         if(!data){
             return [];
@@ -53,5 +54,21 @@ export default {
                 selectedItem: selectedRows
             })
         }
+    },
+    // 计时格式
+    programTime(time) {
+        // 获取时分秒
+        let h = parseInt(time/3600)
+        let m = parseInt((time - h*3600) / 60)
+        let s = time - h*3600 - m*60
+
+        // 格式化
+        h = h < 10 ? `0${h}` : h
+        m = m < 10 ? `0${m}` : m
+        s = s < 10 ? `0${s}` : s
+
+        // 输出时间
+        let programTime = `${h}:${m}:${s}`
+        return programTime
     }
 }

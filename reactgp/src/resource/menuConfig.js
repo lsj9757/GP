@@ -16,12 +16,12 @@ const menuList = [
                 key: '/client/clientLogin'
             },
             {
-                title: '饼图',
-                key: '/echarts/pie'
+                title: '注册',
+                key: '/client/clientRes'
             },
             {
                 title: '折线图',
-                key: '/echarts/line'
+                key: '/client/clientNow'
             },
         ]
     },
