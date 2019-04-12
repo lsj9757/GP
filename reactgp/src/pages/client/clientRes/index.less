@@ -1,9 +1,12 @@
 .clientRes {
+    height: 100%;
     // antd card样式修改
     .ant-card-bordered {
+        height: 100%;
+        overflow: auto;
         box-shadow:0 0 8px 1px #cecbbf;
         border-radius: 10px;
-        background-color: rgba(249, 199, 0, 0.3);
+        background-color: rgba(80, 64, 0, 0.3);
         .ant-card-head-title {
             font-size: 1.5rem;
             color: #6cffd1
@@ -11,15 +14,15 @@
     }
     // antd FormItem样式修改
     .ant-form-item {
-        padding-bottom: 12px;
+        padding-bottom: 2px;
         .ant-form-explain {
             color: #f9c700;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
     }
-    Input, Button{
-        height: 42px;
-        font-size: 1rem;
+    Input, Button, .form .ant-select, form .ant-cascader-picker{
+        height: 38px;
+        font-size: 0.9rem;
         border-radius: 10px;
         opacity: 0.9;
     }

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Card, Form, Input, Button, message, Icon, Select, Modal } from "antd";
+import { Form, Input, Button, message, Icon, Select, Modal, notification } from "antd";
 import './index.less';
 import Utils from '../../../resource/utils';
+import Cookies from 'js-cookie';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -10,40 +12,62 @@ class ClientNow extends Component {
         super(props);
         this.state = {
             startFlag:false,
-            startTime:0
+            geolocationFlag:false, //是否可以定位,若不行则无法开启
+            bike_time:0,
+            start_time:'',
+            end_time:'',
         };
     }
 
     componentDidMount(){
-        this.renderMap()
+        if (Cookies.get('user_name')) {
+            this.renderMap()
+        } else {
+            this.props.history.push({ pathname : '/client/clientLogin' })
+        }
     }
 
     params = {
-        recordTimer: null
+        recordTimer: null, // 骑行计时器
+        geolocationTimer: null, // 定位计时器
+        geolocation_info: [] // 骑行位置信息
     }
 
+    // 退出登陆
+    userEnd = () => {
+        Cookies.remove('user_name');
+        message.success('退出成功', 1)
+        this.props.history.push({ pathname : '/client/clientLogin' })
+    }
 
+    // 操作
     handleOperator = (startFlag) => {
         if (!startFlag) {
-            let startInfo = this.props.form.getFieldsValue();
-            this.props.form.validateFields((err,values)=>{ //校验
-                if (!err) {
+            let bike_info = this.props.form.getFieldsValue();
+            this.props.form.validateFields((err,values)=>{ // 校验
+                if (!err && this.state.geolocationFlag) {
                     this.setState({
                         startFlag:true,
-                        startInfo
+                        bike_info, // 表单信息
+                        start_time:new Date().getTime() // 开始时间
                     })
                     this.params.recordTimer = setInterval(()=>{
                         this.setState({
-                            startTime:this.state.startTime+1
+                            bike_time:this.state.bike_time+1
                         })
                     },1000)
+                    // 先执行一次记录起始位置
+                    this.getGeolocation()
+                    message.success('开始记录~')
+                    // 定时记录行驶路径
+                    this.params.geolocationTimer = setInterval(this.getGeolocation,15000)
                 } else {
-                    message.warning(`输入有误~`)
+                    this.state.geolocationFlag ? message.warning(`输入有误~`,1) : message.error('定位失败~ 由于Chrome、iOS10等已不再支持非安全域的浏览器定位请求，本站无资金升级https= =换个浏览器试试8~', 6)
                 }
             })
         } else {
             Modal.confirm({
-                title: '睁大眼睛',
+                title: '睁大你的眼睛',
                 content: `确定要结束此行程吗?`,
                 onOk:()=>{
                    this.handleEnd()
@@ -52,25 +76,40 @@ class ClientNow extends Component {
         }
     }
 
+    // 结束按钮
     handleEnd = () =>{
-        message.success(`结束成功!`)
+        let all_info = {
+            'bike_sn' : this.state.bike_info.bike_sn,
+            'bike_company' : this.state.bike_info.bike_company,
+            'bike_time' : this.state.bike_time,
+            'start_time' : this.state.start_time,
+            'end_time' : new Date().getTime(),
+            'geolocation_info' : this.params.geolocation_info
+        }
+        console.log(all_info)
+        message.success(`结束骑行~`,1)
+        this.getGeolocation()
         // 清除计时器
         clearTimeout(this.params.recordTimer)
+        clearTimeout(this.params.geolocationTimer)
+        // 清空数据
         this.setState({
             startFlag:false,
-            startInfo:'',
-            startTime:0
+            geolocationFlag:false,
+            bike_info:'',
+            bike_time:0
         })
+        this.params.geolocation_info = []
     }
 
+    // 地图(高德)
     renderMap = () => {
-        // this.map = new window.BMap.Map("clientNowMap"); // 创建地图实例  
-        // this.addMapControl(); //调用地图控件
-        // this.drawBikeRoute(result.position_list) //调用行驶路线(mock数据里是这个'position_list'参数)
         this.getGeolocation()
     }
 
+    // 绘制地图,定位并记录位置
     getGeolocation = () => {
+        let _this = this
         var map = new window.AMap.Map('clientNowMap', {
             resizeEnable: true
         });
@@ -104,26 +143,25 @@ class ClientNow extends Component {
             window.AMap.event.addListener(geolocation, 'error', onError)
             //解析定位结果
             function onComplete(data) {
-                // document.getElementById('status').innerHTML='定位成功'
-                // var str = [];
-                // str.push('定位结果：' + data.position);
-                // str.push('定位类别：' + data.location_type);
-                // if(data.accuracy){
-                //     str.push('精度：' + data.accuracy + ' 米');
-                // }//如为IP精确定位结果则没有精度信息
-                // str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
-                // document.getElementById('result').innerHTML = str.join('<br>');
-                console.log(data.position.lat, data.position.lng)
+                // 第一次定位
+                if (!_this.state.startFlag) {
+                    _this.setState({
+                        geolocationFlag : true 
+                    })
+                    message.success('定位成功~',1)
+                } else {
+                    // 进入骑行模式
+                    let position = {
+                        'lng' : data.position.lng,
+                        'lat' : data.position.lat
+                    }
+                    _this.params.geolocation_info.push(position)
+                }
             }
             function onError(data) {
-                // document.getElementById('status').innerHTML='定位失败'
-                // document.getElementById('result').innerHTML = '失败原因排查信息:'+data.message;
-                console.log(2)
+                message.error('定位失败~ 由于Chrome、iOS10等已不再支持非安全域的浏览器定位请求，本站无资金升级https= =换个浏览器试试8~', 6)
             }
-        });   
-        // window.AMap.plugin('AMap.CitySearch', function () {
-            
-        // })
+        });
     }
 
     render() {
@@ -136,6 +174,10 @@ class ClientNow extends Component {
         return (
             <div className="clientNow">
                 <Form style={{paddingTop: '0rem'}}>
+                    <div className="clientNow-User">
+                        <span>您好, {Cookies.get('user_name')}</span>
+                        <span onClick={this.userEnd}>退出 <Icon type="logout"/></span>
+                    </div>
                     <FormItem>
                         <Button style={{width:'100%'}} type={!this.state.startFlag ? 'primary' : 'danger'}  onClick={()=>this.handleOperator(this.state.startFlag)}>
                             {   
@@ -150,7 +192,7 @@ class ClientNow extends Component {
                         !this.state.startFlag ? 
                             (<div>
                                 <FormItem>{
-                                    getFieldDecorator('bikeCompany', {
+                                    getFieldDecorator('bike_company', {
                                         rules:[
                                             {
                                                 required:true,
@@ -169,7 +211,7 @@ class ClientNow extends Component {
                                 }</FormItem>
                                 <FormItem>
                                     {
-                                        getFieldDecorator('bikeSn',{
+                                        getFieldDecorator('bike_sn',{
                                             initialValue:'',
                                             rules:[
                                                 {
@@ -190,13 +232,16 @@ class ClientNow extends Component {
 
                             (<div>
                                 <FormItem className="clientNow-Data">
-                                    <div>共享单车运营商 : {companyConfig[this.state.startInfo.bikeCompany]}</div>
+                                    <div>共享单车运营商 : {companyConfig[this.state.bike_info.bike_company]}</div>
                                 </FormItem>
                                 <FormItem className="clientNow-Data">
-                                    <div>车辆编号 : {this.state.startInfo.bikeSn}</div>
+                                    <div>车辆编号 : {this.state.bike_info.bike_sn}</div>
                                 </FormItem>
                                 <FormItem className="clientNow-Data">
-                                    <div>骑行时间 : {Utils.programTime(this.state.startTime)}</div>
+                                    <div>开始时间 : {Utils.formateDate(this.state.start_time, true)}</div>
+                                </FormItem>
+                                <FormItem className="clientNow-Data">
+                                    <div>骑行时间 : {Utils.programTime(this.state.bike_time)}</div>
                                 </FormItem>
                             </div>)
                     }

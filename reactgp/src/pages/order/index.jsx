@@ -4,6 +4,7 @@ import Utils from '../../resource/utils';
 import Axios from '../../axios/index';
 import Baseform from '../../components/Baseform'
 import '../style/common.less';
+import moment from 'moment';
 const FormItem = Form.Item;
 
 export default class Order extends Component {
@@ -47,6 +48,7 @@ export default class Order extends Component {
     handleFilter = (filterParams) => {
         this.params = filterParams;
         this.requestList();
+        console.log(moment(filterParams.begin_time).format("YYYY-MM-DD HH:mm:ss"))
     }
 
     requestList = () => {

@@ -13,7 +13,12 @@ export default class Client extends Component {
     render() {
         return (
             <div className="client">
-                {this.props.children}
+                {/* <div className="client-head">
+                    
+                </div> */}
+                <div className="client-content">
+                    {this.props.children}
+                </div>
             </div>
         )
     }

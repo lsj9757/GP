@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Card, Form, Input, Button, Radio, Icon, DatePicker } from "antd";
+import { Card, Form, Input, Button, Icon, DatePicker, Cascader, message } from "antd";
 import './index.less';
 import moment from 'moment';
+import cityList from '../../../resource/address.js';
+import Cookies from 'js-cookie';
+
 const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
 
 class ClientRes extends Component {
     constructor(props) {
@@ -14,37 +16,40 @@ class ClientRes extends Component {
     }
 
     handleSubmit = () => {
-        this.props.history.push({ pathname : '/client/clientLogin' ,query : { day: 'Friday'} })
+        let user_info = this.props.form.getFieldsValue();
+        this.props.form.validateFields((err,values)=>{ // 校验
+            if (!err) {
+                message.success(`注册成功并进入~`)
+                user_info.user_birthday = moment(user_info.user_birthday).format("YYYY-MM-DD")
+                console.log(user_info)
+                // 同样存入cookies
+                Cookies.set('user_name', user_info.user_name, { expires: 1 });
+                this.props.history.push({ pathname : '/client/clientNow' })
+            } else {
+                message.warning(`输入有误~`)
+            }
+        })
     }
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const offsetLayout = {
-            labelCol:{
-                xs:24,
-                sm:4
-            },
-            wrapperCol:{
-                xs:24,
-                sm:12
-            }
-        }
+        
         return (
             <div className="clientRes">
             <Card title="Register">
                 <Form>
                     <FormItem>
                         {
-                            getFieldDecorator('userName',{
+                            getFieldDecorator('user_name',{
                                 initialValue:'',
                                 rules:[
                                     {
                                         required:true,
-                                        message:'用户名不能为空'
+                                        message:'不能为空~'
                                     },
                                     {
-                                        min:5,max:10,
-                                        message:'长度不在范围内'
+                                        min:6,max:12,
+                                        message:'长度6-12位'
                                     },
                                     {
                                         pattern:new RegExp('^\\w+$','g'),
@@ -52,29 +57,38 @@ class ClientRes extends Component {
                                     }
                                 ]
                             })(
-                                <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+                                <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="userName" />
                             )
                         }
                     </FormItem>
                     <FormItem>
                         {
-                            getFieldDecorator('userPwd', {
+                            getFieldDecorator('user_pwd', {
                                 initialValue: '',
-                                rules: []
+                                rules: [
+                                    {
+                                        required:true,
+                                        message:'不能为空~'
+                                    },
+                                ]
                             })(
-                                <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+                                <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="userPwd" />
                             )
                         }
                     </FormItem>
                     <FormItem>
                         {
-                                getFieldDecorator('birthday',{
-                                    // initialValue:moment('2018-10-10')
+                                getFieldDecorator('user_birthday',{
+                                    rules: [
+                                        {
+                                            required:true,
+                                            message:'不能为空~'
+                                        },
+                                    ]
                                 })(
                                     <DatePicker
                                         style={{width:'100%'}}
-                                        showTime
-                                        format="YYYY-MM-DD HH:mm:ss"
+                                        format="YYYY-MM-DD"
                                         placeholder="birthday"
                                     />
                                 )
@@ -82,20 +96,16 @@ class ClientRes extends Component {
                     </FormItem>
                     <FormItem>
                         {
-                            getFieldDecorator('userTel',{
+                            getFieldDecorator('user_phone',{
                                 initialValue:'',
                                 rules:[
                                     {
                                         required:true,
-                                        message:'用户名不能为空'
+                                        message:'不能为空~'
                                     },
                                     {
-                                        min:5,max:10,
-                                        message:'长度不在范围内'
-                                    },
-                                    {
-                                        pattern:new RegExp('^\\w+$','g'),
-                                        message:'用户名必须为字母或者数字'
+                                        pattern:new RegExp('^[1][3-8][0-9]{9}$'),
+                                        message:'手机号不规范哦~'
                                     }
                                 ]
                             })(
@@ -105,20 +115,12 @@ class ClientRes extends Component {
                     </FormItem>
                     <FormItem>
                         {
-                            getFieldDecorator('userWechat',{
+                            getFieldDecorator('user_wx',{
                                 initialValue:'',
                                 rules:[
                                     {
                                         required:true,
-                                        message:'用户名不能为空'
-                                    },
-                                    {
-                                        min:5,max:10,
-                                        message:'长度不在范围内'
-                                    },
-                                    {
-                                        pattern:new RegExp('^\\w+$','g'),
-                                        message:'用户名必须为字母或者数字'
+                                        message:'不能为空~'
                                     }
                                 ]
                             })(
@@ -128,24 +130,16 @@ class ClientRes extends Component {
                     </FormItem>
                     <FormItem>
                         {
-                            getFieldDecorator('userAddress',{
+                            getFieldDecorator('user_address',{
                                 initialValue:'',
                                 rules:[
                                     {
                                         required:true,
-                                        message:'用户名不能为空'
-                                    },
-                                    {
-                                        min:5,max:10,
-                                        message:'长度不在范围内'
-                                    },
-                                    {
-                                        pattern:new RegExp('^\\w+$','g'),
-                                        message:'用户名必须为字母或者数字'
+                                        message:'不能为空~'
                                     }
                                 ]
                             })(
-                                <Input prefix={<Icon type="bank" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="address" />
+                                <Cascader options={cityList} placeholder="address" />
                             )
                         }
                     </FormItem>

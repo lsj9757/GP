@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Card, Form, Input, Button, message, Icon, Checkbox } from "antd";
+import { Form, Input, Button, message, Icon } from "antd";
 import './index.less';
+import Cookies from 'js-cookie';
 const FormItem = Form.Item;
 
 class ClientLogin extends Component {
@@ -11,8 +12,24 @@ class ClientLogin extends Component {
         };
     }
 
+    componentDidMount(){
+        if (Cookies.get('user_name')) {
+            this.props.history.push({ pathname : '/client/clientNow' })
+        }
+    }
+
     handleSubmit = () => {
-        this.props.history.push({ pathname : '/client/clientNow' ,query : { day: 'Friday'} })
+        let user_info = this.props.form.getFieldsValue();
+        this.props.form.validateFields((err,values)=>{ // 校验
+            if (!err) {
+                message.success(`登陆成功~`, 1)
+                // cookies存入
+                Cookies.set('user_name', user_info.user_name, { expires: 1 });
+                this.props.history.push({ pathname : '/client/clientNow' })
+            } else {
+                message.warning(`输入有误~`, 1)
+            }
+        })
     }
 
     render() {
@@ -23,39 +40,36 @@ class ClientLogin extends Component {
                 <Form style={{paddingTop: '8rem'}}>
                     <FormItem>
                         {
-                            getFieldDecorator('userName',{
+                             getFieldDecorator('user_name',{
                                 initialValue:'',
                                 rules:[
                                     {
                                         required:true,
-                                        message:'用户名不能为空'
+                                        message:'不能为空~'
                                     },
-                                    {
-                                        min:5,max:10,
-                                        message:'长度不在范围内'
-                                    },
-                                    {
-                                        pattern:new RegExp('^\\w+$','g'),
-                                        message:'用户名必须为字母或者数字'
-                                    }
                                 ]
                             })(
-                                <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+                                <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="userName" />
                             )
                         }
                     </FormItem>
                     <FormItem>
                         {
-                            getFieldDecorator('userPwd', {
+                            getFieldDecorator('user_pwd', {
                                 initialValue: '',
-                                rules: []
+                                rules: [
+                                    {
+                                        required:true,
+                                        message:'不能为空~'
+                                    },
+                                ]
                             })(
-                                <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+                                <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="userPwd" />
                             )
                         }
                     </FormItem>
                     <FormItem>
-                        <Button style={{width:'100%'}} type="primary"  onClick={this.handleSubmit}>Login in</Button>
+                        <Button style={{width:'100%'}} type="primary"  onClick={this.handleSubmit}>Login In</Button>
                     </FormItem>
                     <div className="clientLogin-rsgo">
                         Or <a href="./clientRes">register now!</a>

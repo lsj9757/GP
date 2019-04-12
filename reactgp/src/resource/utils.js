@@ -4,10 +4,18 @@ const Option = Select.Option;
 
 export default {  
     //计算时间
-    formateDate(time) {
+    formateDate(time, type=false) {
         if (!time) return ''
         let date = new Date(time)
-        return `${date.getFullYear()}-${(date.getMonth()+1)}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+        // 格式化
+        let y = date.getFullYear() < 10 ? `0${date.getFullYear()}` : date.getFullYear()
+        let m = (date.getMonth()+1) < 10 ? `0${(date.getMonth()+1)}` : (date.getMonth()+1)
+        let d = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+        let h = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+        let min = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+        let s = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+        
+        return type ? `${h}:${min}:${s}` : `${y}-${m}-${d} ${h}:${min}:${s}`
     },
     //分页
     pagination(data,callback){
