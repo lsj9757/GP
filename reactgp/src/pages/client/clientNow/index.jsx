@@ -13,6 +13,7 @@ class ClientNow extends Component {
         this.state = {
             startFlag:false,
             geolocationFlag:false, //是否可以定位,若不行则无法开启
+            bike_gc:'', //订单初始位置
             bike_time:0,
             start_time:'',
             end_time:'',
@@ -30,7 +31,8 @@ class ClientNow extends Component {
     params = {
         recordTimer: null, // 骑行计时器
         geolocationTimer: null, // 定位计时器
-        geolocation_info: [] // 骑行位置信息
+        geolocation_info: [], // 骑行位置信息
+        // bike_distance: 0
     }
 
     // 退出登陆
@@ -57,8 +59,8 @@ class ClientNow extends Component {
                         })
                     },1000)
                     // 先执行一次记录起始位置
-                    this.getGeolocation()
-                    message.success('开始记录~')
+                    this.getGeolocation(true)
+                    message.success('开始记录~',1)
                     // 定时记录行驶路径
                     this.params.geolocationTimer = setInterval(this.getGeolocation,15000)
                 } else {
@@ -79,11 +81,16 @@ class ClientNow extends Component {
     // 结束按钮
     handleEnd = () =>{
         let all_info = {
+            'bike_user' : Cookies.get('user_name'),
             'bike_sn' : this.state.bike_info.bike_sn,
             'bike_company' : this.state.bike_info.bike_company,
             'bike_time' : this.state.bike_time,
+            'bike_gc' : this.state.bike_gc,
+            'bike_local' : this.params.geolocation_info[this.params.geolocation_info.length-1],
+            // 'bike_distance' : this.params.bike_distance,
             'start_time' : this.state.start_time,
             'end_time' : new Date().getTime(),
+            'week_time' : new Date().getDay(),
             'geolocation_info' : this.params.geolocation_info
         }
         console.log(all_info)
@@ -108,7 +115,7 @@ class ClientNow extends Component {
     }
 
     // 绘制地图,定位并记录位置
-    getGeolocation = () => {
+    getGeolocation = (record) => {
         let _this = this
         var map = new window.AMap.Map('clientNowMap', {
             resizeEnable: true
@@ -151,6 +158,27 @@ class ClientNow extends Component {
                     message.success('定位成功~',1)
                 } else {
                     // 进入骑行模式
+                    if (record) {
+                        // 第一次进入骑行模式需要根据定位记录当前城市(这里用的百度api)
+                        var gc = new window.BMap.Geocoder();
+                        var point = new window.BMap.Point(data.position.lng, data.position.lat);
+                        gc.getLocation(point, function(e){
+                            let province = e.addressComponents.province 
+                            let city = e.addressComponents.city
+                            _this.setState({
+                                bike_gc : `${province}/${city}`
+                            })
+                        })
+                    }
+                    // } else {
+                    //     var Bmap = new window.BMap.Map("container"); // 创建地图实例  
+                    //     // 从第二次进入骑行模式时开始计算距离(这里用的百度api)
+                    //     let gc_length = _this.params.geolocation_info.length
+                    //     let pointPre = new window.BMap.Point(_this.params.geolocation_info[gc_length-1].lng, _this.params.geolocation_info[gc_length-1].lat);
+                    //     let pointNow = new window.BMap.Point(data.position.lng, data.position.lat);
+                    //     let distancePoint = Bmap.getDistance(new window.BMap.Point(pointPre, pointNow))
+                    //     _this.params.bike_distance += Number(distancePoint)
+                    // }
                     let position = {
                         'lng' : data.position.lng,
                         'lat' : data.position.lat
@@ -232,10 +260,10 @@ class ClientNow extends Component {
 
                             (<div>
                                 <FormItem className="clientNow-Data">
-                                    <div>共享单车运营商 : {companyConfig[this.state.bike_info.bike_company]}</div>
+                                    <div>当前位置 : {this.state.bike_gc}</div>
                                 </FormItem>
                                 <FormItem className="clientNow-Data">
-                                    <div>车辆编号 : {this.state.bike_info.bike_sn}</div>
+                                    <div>{companyConfig[this.state.bike_info.bike_company]}车辆编号 : {this.state.bike_info.bike_sn}</div>
                                 </FormItem>
                                 <FormItem className="clientNow-Data">
                                     <div>开始时间 : {Utils.formateDate(this.state.start_time, true)}</div>

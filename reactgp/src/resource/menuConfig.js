@@ -8,6 +8,10 @@ const menuList = [
         key: '/login'
     },
     {
+        title: '用户',
+        key: './userManage'
+    },
+    {
         title: '客户',
         key: '/client',
         children: [

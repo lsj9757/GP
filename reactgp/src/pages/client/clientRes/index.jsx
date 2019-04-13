@@ -20,7 +20,10 @@ class ClientRes extends Component {
         this.props.form.validateFields((err,values)=>{ // 校验
             if (!err) {
                 message.success(`注册成功并进入~`)
+                // 格式化生日
                 user_info.user_birthday = moment(user_info.user_birthday).format("YYYY-MM-DD")
+                // 拼接地址
+                user_info.user_address = `${user_info.user_address[0]}/${user_info.user_address[1]}`
                 console.log(user_info)
                 // 同样存入cookies
                 Cookies.set('user_name', user_info.user_name, { expires: 1 });

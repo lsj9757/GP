@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
-import { Card, Button, Table, Form, Select, Modal, message} from 'antd'
+import { Card, Button, Table, Modal} from 'antd'
 import Utils from '../../resource/utils';
 import Axios from '../../axios/index';
 import Baseform from '../../components/Baseform'
 import '../style/common.less';
 import moment from 'moment';
-const FormItem = Form.Item;
 
 export default class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderInfo:{},
-            orderConfirmVisble:false,
-            list:[]
+            order_list:[]
         };
     }
     params = {
@@ -23,20 +20,16 @@ export default class Order extends Component {
     // Baseform组件参数
     formList = [
         {
-            type:'城市',
-        },
-        {
             width:170,
             type: '时间查询'
         },
         {
             type: 'SELECT',
-            label: '订单状态',
-            field:'order_status',
-            placeholder: '全部',
-            initialValue: '1',
+            label: '车辆类别',
+            field:'bike_company',
+            initialValue: 1,
             width: 100,
-            list: [{ id: '0', name: '全部' }, { id: '1', name: '进行中' }, { id: '2', name: '结束行程' }]
+            list: [{ id: 1, name: '摩拜' }, { id: 2, name: 'OFO' }, { id: 3, name: '小蓝' }]
         }
     ]
 
@@ -48,7 +41,7 @@ export default class Order extends Component {
     handleFilter = (filterParams) => {
         this.params = filterParams;
         this.requestList();
-        console.log(moment(filterParams.begin_time).format("YYYY-MM-DD HH:mm:ss"))
+        console.log(filterParams)
     }
 
     requestList = () => {
@@ -58,66 +51,19 @@ export default class Order extends Component {
             data:{
                 params: this.params
             }
-        }).then((res)=>{
-            let list = res.result.item_list.map((item, index) => {
+        }, true).then((res)=>{
+            let list = res.result.order_list.map((item, index) => {
                 item.key = index;
                 return item;
             });
             this.setState({
-                list, //table数据
+                order_list: list, //table数据
+                selectedRowKeys:[],
                 pagination: Utils.pagination(res, (current) => {
                     _this.params.page = current;
                     _this.requestList();
                 })
             })
-        })
-    }
-
-    // 订单结束确认
-    handleConfirm = () => {
-        let item = this.state.selectedItem;
-        if (!item) {
-            Modal.info({
-                title: '信息',
-                content: '请选择一条订单进行结束'
-            })
-            return;
-        }
-        Axios.ajax({
-            url:'/order/ebike_info',
-            data:{
-                params:{
-                    orderId: item.id
-                }
-            }
-        }).then((res)=>{
-            if(res.code == '0' ){
-                this.setState({
-                    orderInfo:res.result,
-                    orderConfirmVisble: true
-                })
-            }
-        })
-    }
-
-    // 结束订单
-    handleFinishOrder = () => {
-        let item = this.state.selectedItem;
-        Axios.ajax({
-            url: '/order/finish_order',
-            data: {
-                params: {
-                    orderId: item.id
-                }
-            }
-        }).then((res) => {
-            if (res.code == '0') {
-                message.success('订单结束成功')
-                this.setState({
-                    orderConfirmVisble: false
-                })
-                this.requestList();
-            }
         })
     }
 
@@ -143,63 +89,63 @@ export default class Order extends Component {
 
     render() {
 
-        const columns = [
+        const order_columns = [
             {
-                title:'订单编号',
-                dataIndex:'order_sn'
+                title:'订单ID',
+                dataIndex:'id'
             },
             {
                 title: '车辆编号',
                 dataIndex: 'bike_sn'
             },
             {
-                title: '用户名',
-                dataIndex: 'user_name'
-            },
-            {
-                title: '手机号',
-                dataIndex: 'mobile'
-            },
-            {
-                title: '里程',
-                dataIndex: 'distance',
-                render(distance){
-                    return distance/1000 + 'Km';
+                title: '车辆类别',
+                dataIndex: 'bike_company',
+                render(state){
+                    let config = {
+                        1:'OFO',
+                        2:'摩拜',
+                        3:'小蓝',
+                    }
+                    return config[state];
                 }
             },
             {
-                title: '行驶时长',
-                dataIndex: 'total_time'
+                title: '用户名',
+                dataIndex: 'bike_user'
             },
             {
-                title: '状态',
-                dataIndex: 'status'
+                title: '行驶城市',
+                dataIndex: 'bike_gc',
+
+            },
+            {
+                title: '行驶时长',
+                dataIndex: 'bike_time',
+                render(data){
+                    return Utils.programTime(data)
+                }
             },
             {
                 title: '开始时间',
-                dataIndex: 'start_time'
+                dataIndex: 'start_time',
+                render(data){
+                    return Utils.formateDate(parseInt(data))
+                }
             },
             {
                 title: '结束时间',
-                dataIndex: 'end_time'
-            },
-            {
-                title: '订单金额',
-                dataIndex: 'total_fee'
-            },
-            {
-                title: '实付金额',
-                dataIndex: 'user_pay'
+                dataIndex: 'end_time',
+                render(data){
+                    return Utils.formateDate(parseInt(data))
+                }
             }
         ]
-        const formItemLayout = {
-            labelCol:{span:5},
-            wrapperCol:{span:19}
-        }
+
         const selectedRowKeys = this.state.selectedRowKeys;
         const rowSelection = {
             type: 'radio',
-            selectedRowKeys
+            selectedRowKeys: selectedRowKeys
         }
 
         return (
@@ -209,13 +155,12 @@ export default class Order extends Component {
                 </Card>
                 <Card style={{marginTop:10}}>
                     <Button type="primary" onClick={this.openOrderDetail}>订单详情</Button>
-                    <Button type="primary" onClick={this.handleConfirm}>结束订单</Button>
                 </Card>
                 <div className="content-wrap">
                     <Table
                         bordered
-                        columns={columns}
-                        dataSource={this.state.list}
+                        columns={order_columns}
+                        dataSource={this.state.order_list}
                         pagination={this.state.pagination}
                         rowSelection={rowSelection}
                         onRow={(record, index) => {
@@ -227,32 +172,6 @@ export default class Order extends Component {
                         }}
                     />
                 </div>
-                <Modal
-                    title="结束订单"
-                    visible={this.state.orderConfirmVisble}
-                    onCancel={()=>{
-                        this.setState({
-                            orderConfirmVisble:false
-                        })
-                    }}
-                    onOk={this.handleFinishOrder}
-                    width={600}
-                >
-                    <Form layout="horizontal">
-                        <FormItem label="车辆编号" {...formItemLayout}>
-                            {this.state.orderInfo.bike_sn}
-                        </FormItem>
-                        <FormItem label="剩余电量" {...formItemLayout}>
-                            {this.state.orderInfo.battery + '%'}
-                        </FormItem>
-                        <FormItem label="行程开始时间" {...formItemLayout}>
-                            {this.state.orderInfo.start_time}
-                        </FormItem>
-                        <FormItem label="当前位置" {...formItemLayout}>
-                            {this.state.orderInfo.location}
-                        </FormItem>
-                    </Form>
-                </Modal>
             </div>
         )
     }

@@ -16,13 +16,13 @@ export default class Axios {
             })
         })
     }
-    static ajax(options){
+    static ajax(options, state=false){
         let loading;
         if (options.data && options.data.isShowLoading !== false){
             loading = document.getElementById('ajaxLoading');
             loading.style.display = 'block';
         }
-        let baseApi = 'https://www.easy-mock.com/mock/5a7278e28d0c633b9c4adbd7/api'; //这边用的是easymock的数据格式
+        let baseApi = state ? 'https://www.easy-mock.com/mock/5c9235393cffed483bb0a20e/mockapi' : 'https://www.easy-mock.com/mock/5a7278e28d0c633b9c4adbd7/api'; //这边用的是easymock的数据格式
         return new Promise((resolve,reject)=>{
             axios({
                 url:options.url,

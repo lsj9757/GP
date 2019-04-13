@@ -12,7 +12,8 @@ export default class BikeMap extends Component {
     }
 
     params = {
-        page:1
+        page:1,
+        drawService_info:[]
     }
 
     componentDidMount(){
@@ -69,6 +70,7 @@ export default class BikeMap extends Component {
         this.drawBikeRoute(res.route_list) //调用行驶路线(mock数据里是这个'route_list'参数)
         this.drawServiceArea(res.service_list) //绘制服务区
         this.drawBikeList(res.bike_list) //绘制车辆分布 
+        this.clickPot()
     }
 
     // 添加地图控件
@@ -78,6 +80,7 @@ export default class BikeMap extends Component {
         map.addControl(new window.BMap.ScaleControl({ anchor: window.BMAP_ANCHOR_TOP_RIGHT}));
         // 平移缩放控件
         map.addControl(new window.BMap.NavigationControl({ anchor: window.BMAP_ANCHOR_TOP_RIGHT }));
+        map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
     }
 
     // 绘制用户的行驶路线
@@ -93,8 +96,10 @@ export default class BikeMap extends Component {
                 imageSize: new window.BMap.Size(36, 42),
                 anchor: new window.BMap.Size(18, 42)
             })
-
             let startMarker = new window.BMap.Marker(startPoint, { icon: startIcon });
+            // 保证不被重置绘画清除
+            startMarker.disableMassClear()
+
             this.map.addOverlay(startMarker);
 
             // 绘制结束坐标
@@ -104,6 +109,9 @@ export default class BikeMap extends Component {
                 anchor: new window.BMap.Size(18, 42)
             })
             let endMarker = new window.BMap.Marker(endPoint, { icon: endIcon });
+            // 保证不被重置绘画清除
+            endMarker.disableMassClear()
+
             this.map.addOverlay(endMarker);
 
             // 连接路线图
@@ -118,6 +126,9 @@ export default class BikeMap extends Component {
                 strokeWeight:3,
                 strokeOpacity:1
             })
+            // 保证不被重置绘画清除
+            polyline.disableMassClear()
+
             this.map.addOverlay(polyline);
             this.map.centerAndZoom(endPoint, 11);
         }
@@ -127,9 +138,16 @@ export default class BikeMap extends Component {
     drawServiceArea = (list) => {
         // 连接路线图
         let trackPoint = [];
+        let distance = 0;
         for (let i = 0; i < list.length; i++) {
-            let point = list[i];
-            trackPoint.push(new window.BMap.Point(point.lon, point.lat));
+            let point = new window.BMap.Point(list[i].lon, list[i].lat)
+            trackPoint.push(point);
+            // 计算距离
+            if(i>0) {
+                let distancePoint = this.map.getDistance(new window.BMap.Point(list[i-1].lon, list[i-1].lat),point)
+                console.log(distancePoint)
+                distance += Number(distancePoint)
+            }
         }
         // 绘制服务区
         let polygon = new window.BMap.Polygon(trackPoint, {
@@ -139,7 +157,11 @@ export default class BikeMap extends Component {
             // fillColor: '#ff8605',
             fillOpacity: 0.4
         })
+        // 保证不被重置绘画清除
+        polygon.disableMassClear()
+
         this.map.addOverlay(polygon);
+        console.log(distance)
     }
 
     // 绘制车辆分布
@@ -152,8 +174,60 @@ export default class BikeMap extends Component {
             let point = list[i].split(",");
             let bikePoint = new window.BMap.Point(point[0], point[1]);
             var bikeMarker = new window.BMap.Marker(bikePoint, { icon: bikeIcon });
+            // 保证不被重置绘画清除
+            bikeMarker.disableMassClear()
+
             this.map.addOverlay(bikeMarker);
         }
+    }
+
+    // 点击跳跃
+    clickPot = () => {
+        let _this = this
+        this.map.addEventListener("click", function(e){
+            var point = new window.BMap.Point(e.point.lng, e.point.lat);
+
+            _this.params.drawService_info.push({
+                'lng': e.point.lng,
+                'lat': e.point.lat
+            })
+
+            var gc = new window.BMap.Geocoder();
+            var pointAdd = new window.BMap.Point(e.point.lng, e.point.lat);
+            gc.getLocation(pointAdd, function(rs){
+                console.log(rs.addressComponents.province, rs.addressComponents.city);
+            })
+
+            var marker = new window.BMap.Marker(point);  // 创建标注
+            _this.map.addOverlay(marker);               // 将标注添加到地图中
+            // 文字标注
+            var label = new window.BMap.Label(_this.params.drawService_info.length, {offset:new window.BMap.Size(20,-10)});
+	        marker.setLabel(label);
+            marker.setAnimation(window.BMAP_ANIMATION_BOUNCE); //跳动的动画
+        });   
+    }
+
+    drawService = () => {
+        // 连接路线图
+        let trackPoint = [];
+        for (let i = 0; i < this.params.drawService_info.length; i++) {
+            let point = this.params.drawService_info[i];
+            trackPoint.push(new window.BMap.Point(point.lng, point.lat));
+        }
+        // 绘制服务区
+        let polygon = new window.BMap.Polygon(trackPoint, {
+            strokeColor: '#1DA57A',
+            strokeWeight: 4,
+            strokeOpacity: 1,
+            // fillColor: '#ff8605',
+            fillOpacity: 0.4
+        })
+        this.map.addOverlay(polygon);
+    }
+
+    clearService = () => {
+        this.params.drawService_info = []
+        this.map.clearOverlays();
     }
 
     render() {
@@ -163,6 +237,8 @@ export default class BikeMap extends Component {
                     <Baseform formList={this.formList} filterSubmit={this.handleFilterSubmit}/>
                 </Card>
                 <Card style={{marginTop:10}}>
+                    <Button type="primary" onClick={this.drawService}>绘制</Button>
+                    <Button type="primary" onClick={this.clearService}>清空</Button>
                     <div>共{this.state.total_count}辆车</div>
                     <div id="container" style={{height:500}}></div>
                 </Card>

@@ -18,6 +18,7 @@ import Line from './pages/echarts/line'
 import ClientLogin from './pages/client/clientLogin'
 import ClientRes from './pages/client/clientRes'
 import ClientNow from './pages/client/clientNow'
+import UserManage from './pages/userManage'
 
 export default class Router extends Component {
   render() {
@@ -44,6 +45,7 @@ export default class Router extends Component {
                     <Route path="/order" component={Order}></Route>
                     <Route path="/city" component={City}></Route>
                     <Route path="/user" component={User}></Route>
+                    <Route path="/userManage" component={UserManage}></Route>
                     <Route path="/bikeMap" component={BikeMap}></Route>
                     <Route path="/permission" component={Permission}></Route>
                     <Route path="/echarts/bar" component={Bar}></Route>
