@@ -32,7 +32,7 @@ class ClientNow extends Component {
         recordTimer: null, // 骑行计时器
         geolocationTimer: null, // 定位计时器
         geolocation_info: [], // 骑行位置信息
-        // bike_distance: 0
+        geolocation_location: [] //骑行起止位置
     }
 
     // 退出登陆
@@ -80,6 +80,9 @@ class ClientNow extends Component {
 
     // 结束按钮
     handleEnd = () =>{
+        if (!this.params.geolocation_location[1]) {
+            this.params.geolocation_location[1] = this.params.geolocation_location[0]
+        }
         let all_info = {
             'bike_user' : Cookies.get('user_name'),
             'bike_sn' : this.state.bike_info.bike_sn,
@@ -91,7 +94,8 @@ class ClientNow extends Component {
             'start_time' : this.state.start_time,
             'end_time' : new Date().getTime(),
             'week_time' : new Date().getDay(),
-            'geolocation_info' : this.params.geolocation_info
+            'geolocation_info' : this.params.geolocation_info,
+            'geolocation_location' : this.params.geolocation_location
         }
         console.log(all_info)
         message.success(`结束骑行~`,1)
@@ -106,6 +110,7 @@ class ClientNow extends Component {
             bike_info:'',
             bike_time:0
         })
+        this.params.geolocation_location = []
         this.params.geolocation_info = []
     }
 
@@ -158,6 +163,10 @@ class ClientNow extends Component {
                     message.success('定位成功~',1)
                 } else {
                     // 进入骑行模式
+                    // 用于记录街道(高德api)
+                    let geocoder = new window.AMap.Geocoder({
+                        radius: 500 //范围，默认：1000
+                    });
                     if (record) {
                         // 第一次进入骑行模式需要根据定位记录当前城市(这里用的百度api)
                         var gc = new window.BMap.Geocoder();
@@ -169,16 +178,32 @@ class ClientNow extends Component {
                                 bike_gc : `${province}/${city}`
                             })
                         })
+                        // 第一次进入骑行模式需要根据定位记录当前街道(这里用的高德api= =)
+                        geocoder.getAddress([data.position.lng, data.position.lat], function(status, result) {
+                            if (status === 'complete'&&result.regeocode) {
+                                var address = result.regeocode.formattedAddress;
+                                _this.params.geolocation_location.push(address)
+                            }else{
+                                console.log(result)                            }
+                        });
+                    } else {
+                        // 之后进入骑行模式需要根据定位刷新当前街道(这里用的高德api= =)
+                        geocoder.getAddress([data.position.lng, data.position.lat], function(status, result) {
+                            if (status === 'complete'&&result.regeocode) {
+                                var address = result.regeocode.formattedAddress;
+                                _this.params.geolocation_location[1] = address
+                            }else{
+                                console.log(result)                            }
+                        });
+                        //     var Bmap = new window.BMap.Map("container"); // 创建地图实例  
+                        //     // 从第二次进入骑行模式时开始计算距离(这里用的百度api)
+                        //     let gc_length = _this.params.geolocation_info.length
+                        //     let pointPre = new window.BMap.Point(_this.params.geolocation_info[gc_length-1].lng, _this.params.geolocation_info[gc_length-1].lat);
+                        //     let pointNow = new window.BMap.Point(data.position.lng, data.position.lat);
+                        //     let distancePoint = Bmap.getDistance(new window.BMap.Point(pointPre, pointNow))
+                        //     _this.params.bike_distance += Number(distancePoint)
+                        // }
                     }
-                    // } else {
-                    //     var Bmap = new window.BMap.Map("container"); // 创建地图实例  
-                    //     // 从第二次进入骑行模式时开始计算距离(这里用的百度api)
-                    //     let gc_length = _this.params.geolocation_info.length
-                    //     let pointPre = new window.BMap.Point(_this.params.geolocation_info[gc_length-1].lng, _this.params.geolocation_info[gc_length-1].lat);
-                    //     let pointNow = new window.BMap.Point(data.position.lng, data.position.lat);
-                    //     let distancePoint = Bmap.getDistance(new window.BMap.Point(pointPre, pointNow))
-                    //     _this.params.bike_distance += Number(distancePoint)
-                    // }
                     let position = {
                         'lng' : data.position.lng,
                         'lat' : data.position.lat

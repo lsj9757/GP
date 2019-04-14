@@ -6,7 +6,10 @@ export default class Detail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderInfo:{}
+            order_info:{},
+            start_location:'',
+            end_location:'',
+            distance:0
         };
     }
 
@@ -22,25 +25,25 @@ export default class Detail extends Component {
             url:'/order/detail',
             data:{
                 params:{
-                    orderId: orderId
+                    id: orderId
                 }
             }
-        }).then((res)=>{
-            if(res.code == '0'){
-                this.setState({
-                    orderInfo:res.result
-                })
-                this.renderMap(res.result);
-                // this.getGeolocation()
-            }
+        }, true).then((res)=>{
+            this.setState({
+                order_info:res.result,
+                start_location:res.result.geolocation_location[0],
+                end_location:res.result.geolocation_location[1]
+            })
+            this.renderMap(res.result.geolocation_info);
+            // this.getGeolocation() 
         })
     }
 
-    renderMap = (result) => {
+    renderMap = (data) => {
         this.map = new window.BMap.Map("orderDetailMap"); // 创建地图实例  
         this.addMapControl(); //调用地图控件
-        this.drawBikeRoute(result.position_list) //调用行驶路线(mock数据里是这个'position_list'参数)
-        this.drawServiceArea(result.area)
+        this.drawBikeRoute(data) //调用行驶路线(mock数据里是这个'position_list'参数)
+        // this.drawServiceArea(result.area)
     }
 
     // 添加地图控件
@@ -50,6 +53,11 @@ export default class Detail extends Component {
         map.addControl(new window.BMap.ScaleControl({ anchor: window.BMAP_ANCHOR_TOP_RIGHT}));
         // 平移缩放控件
         map.addControl(new window.BMap.NavigationControl({ anchor: window.BMAP_ANCHOR_TOP_RIGHT }));
+        map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
+        // 改变缩略大小
+        setTimeout(()=>{
+            map.setZoom(13)
+        },1000)
     }
 
     // 绘制用户的行驶路线
@@ -61,7 +69,7 @@ export default class Detail extends Component {
             let first = positionList[0];
             let last = positionList[positionList.length-1];
             // 绘制起始坐标
-            startPoint =  new window.BMap.Point(first.lon, first.lat);
+            startPoint =  new window.BMap.Point(first.lng, first.lat);
             let startIcon = new window.BMap.Icon('/assets/start_point.png', new window.BMap.Size(36, 42), {
                 imageSize: new window.BMap.Size(36, 42),
                 anchor: new window.BMap.Size(18, 42)
@@ -71,7 +79,7 @@ export default class Detail extends Component {
             this.map.addOverlay(startMarker);
 
             // 绘制结束坐标
-            endPoint = new window.BMap.Point(last.lon, last.lat);
+            endPoint = new window.BMap.Point(last.lng, last.lat);
             let endIcon = new window.BMap.Icon('/assets/end_point.png', new window.BMap.Size(36, 42), {
                 imageSize: new window.BMap.Size(36, 42),
                 anchor: new window.BMap.Size(18, 42)
@@ -83,7 +91,18 @@ export default class Detail extends Component {
             let trackPoint = [];
             for (let i = 0; i < positionList.length; i++) {
                 let point = positionList[i];
-                trackPoint.push(new window.BMap.Point(point.lon, point.lat));
+                // 定位到骑行位置中间
+                if (i == Math.ceil(positionList.length/2)-1) {
+                    let middle = new window.BMap.Point(point.lng, point.lat)
+                    this.map.centerAndZoom(middle, 11);
+                }
+                // 计算骑行距离
+                if (i > 0) {
+                    let pointPre = new window.BMap.Point(positionList[i-1].lng, positionList[i-1].lat);
+                    let pointNow = new window.BMap.Point(point.lng, point.lat);
+                    this.getDistance(pointPre, pointNow)
+                }
+                trackPoint.push(new window.BMap.Point(point.lng, point.lat));
             }
 
             let polyline = new window.BMap.Polyline(trackPoint, {
@@ -92,7 +111,6 @@ export default class Detail extends Component {
                 strokeOpacity:1
             })
             this.map.addOverlay(polyline);
-            this.map.centerAndZoom(endPoint, 11);
         }
     }
 
@@ -102,7 +120,7 @@ export default class Detail extends Component {
         let trackPoint = [];
         for (let i = 0; i < area.length; i++) {
             let point = area[i];
-            trackPoint.push(new window.BMap.Point(point.lon, point.lat));
+            trackPoint.push(new window.BMap.Point(point.lng, point.lat));
         }
         // 绘制服务区
         let polygon = new window.BMap.Polygon(trackPoint, {
@@ -115,27 +133,24 @@ export default class Detail extends Component {
         this.map.addOverlay(polygon);
     }
 
-    getGeolocation = () => {
-        var map = new window.BMap.Map("orderDetailMap");
-        var point = new window.BMap.Point(116.331398,39.897445);
-        map.centerAndZoom(point,12);
-
-        var geolocation = new window.BMap.Geolocation();
-        geolocation.getCurrentPosition(function(r){
-            if(this.getStatus() == window.BMAP_STATUS_SUCCESS){
-                var mk = new window.BMap.Marker(r.point);
-                map.addOverlay(mk);
-                map.panTo(r.point);
-                alert('您的位置：'+r.point.lng+','+r.point.lat);
-            }
-            else {
-                alert('failed'+this.getStatus());
-            }        
-        });
+    getDistance = (pointPre, pointNow) => {
+        // let gc_length = _this.params.geolocation_info.length
+        // let pointPre = new window.BMap.Point(_this.params.geolocation_info[gc_length-1].lng, _this.params.geolocation_info[gc_length-1].lat);
+        // let pointNow = new window.BMap.Point(data.position.lng, data.position.lat);
+        let distancePoint = this.map.getDistance(new window.BMap.Point(pointPre, pointNow))
+        console.log(this.map.getDistance)
+        this.setState({
+            distance: this.state.distance + distancePoint
+        })
     }
 
     render() {
-        const info = this.state.orderInfo || {};
+        const info = this.state.order_info || {};
+        let companyConfig = {
+            1 : '摩拜',
+            2 : 'OFO',
+            3 : '小蓝'
+        }
         return (
             <div className="detail">
                 <Card>
@@ -144,12 +159,8 @@ export default class Detail extends Component {
                         <div className="item-title">基础信息</div>
                         <ul className="detail-form">
                             <li>
-                                <div className="detail-form-left">用车模式 :</div>
-                                <div className="detail-form-content">{info.mode === 1 ?'服务区':'停车点'}</div>
-                            </li>
-                            <li>
-                                <div className="detail-form-left">订单编号 :</div>
-                                <div className="detail-form-content">{info.order_sn}</div>
+                                <div className="detail-form-left">车辆类别 :</div>
+                                <div className="detail-form-content">{companyConfig[info.bike_company]}</div>
                             </li>
                             <li>
                                 <div className="detail-form-left">车辆编号 :</div>
@@ -157,11 +168,15 @@ export default class Detail extends Component {
                             </li>
                             <li>
                                 <div className="detail-form-left">用户姓名 :</div>
-                                <div className="detail-form-content">{info.user_name}</div>
+                                <div className="detail-form-content">{info.bike_user}</div>
+                            </li>
+                            <li>
+                                <div className="detail-form-left">用户地址 :</div>
+                                <div className="detail-form-content">{info.user_address}</div>
                             </li>
                             <li>
                                 <div className="detail-form-left">手机号码 :</div>
-                                <div className="detail-form-content">{info.mobile}</div>
+                                <div className="detail-form-content">{info.user_phone}</div>
                             </li>
                         </ul>
                     </div>
@@ -169,16 +184,20 @@ export default class Detail extends Component {
                         <div className="item-title">行驶轨迹</div>
                         <ul className="detail-form">
                             <li>
+                                <div className="detail-form-left">订单编号 :</div>
+                                <div className="detail-form-content">{info.id}</div>
+                            </li>
+                            <li>
                                 <div className="detail-form-left">行程起点 :</div>
-                                <div className="detail-form-content">{info.start_location}</div>
+                                <div className="detail-form-content">{this.state.start_location}</div>
                             </li>
                             <li>
                                 <div className="detail-form-left">行程终点 :</div>
-                                <div className="detail-form-content">{info.end_location}</div>
+                                <div className="detail-form-content">{this.state.end_location}</div>
                             </li>
                             <li>
                                 <div className="detail-form-left">行驶里程 :</div>
-                                <div className="detail-form-content">{info.distance/1000}公里</div>
+                                <div className="detail-form-content">{this.state.distance}米</div>
                             </li>
                         </ul>
                     </div>

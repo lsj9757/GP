@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Button, Table, Form, Select, Modal, message} from 'antd'
 import Axios from '../../axios/index';
 import Baseform from '../../components/Baseform'
+import BMapLib from '../../resource/GeoUtils'
 
 export default class BikeMap extends Component {
     constructor(props) {
@@ -145,7 +146,6 @@ export default class BikeMap extends Component {
             // 计算距离
             if(i>0) {
                 let distancePoint = this.map.getDistance(new window.BMap.Point(list[i-1].lon, list[i-1].lat),point)
-                console.log(distancePoint)
                 distance += Number(distancePoint)
             }
         }
@@ -160,8 +160,15 @@ export default class BikeMap extends Component {
         // 保证不被重置绘画清除
         polygon.disableMassClear()
 
+        //计算是否区域内
+        // var p = new window.BMap.Point(116.4024,40.17272)
+        // if(BMapLib.GeoUtils.isPointInPolygon(p,polygon)){
+        //     console.log(1111)
+        // }else{
+        //     console.log(22222)
+        // }
+
         this.map.addOverlay(polygon);
-        console.log(distance)
     }
 
     // 绘制车辆分布
@@ -186,7 +193,7 @@ export default class BikeMap extends Component {
         let _this = this
         this.map.addEventListener("click", function(e){
             var point = new window.BMap.Point(e.point.lng, e.point.lat);
-
+            console.log(e.point.lng, e.point.lat)
             _this.params.drawService_info.push({
                 'lng': e.point.lng,
                 'lat': e.point.lat

@@ -4,7 +4,6 @@ import Utils from '../../resource/utils';
 import Axios from '../../axios/index';
 import Baseform from '../../components/Baseform'
 import '../style/common.less';
-import moment from 'moment';
 
 export default class Order extends Component {
     constructor(props) {
@@ -103,8 +102,8 @@ export default class Order extends Component {
                 dataIndex: 'bike_company',
                 render(state){
                     let config = {
-                        1:'OFO',
-                        2:'摩拜',
+                        1:'摩拜',
+                        2:'OFO',
                         3:'小蓝',
                     }
                     return config[state];
