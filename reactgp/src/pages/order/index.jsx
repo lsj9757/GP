@@ -57,7 +57,6 @@ export default class Order extends Component {
             });
             this.setState({
                 order_list: list, //table数据
-                selectedRowKeys:[],
                 pagination: Utils.pagination(res, (current) => {
                     _this.params.page = current;
                     _this.requestList();
@@ -149,7 +148,7 @@ export default class Order extends Component {
 
         return (
             <div className="order">
-                <Card>
+                <Card style={{marginTop:'0.8rem'}}>
                     <Baseform formList={this.formList} filterSubmit={this.handleFilter}/>
                 </Card>
                 <Card style={{marginTop:10}}>

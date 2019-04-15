@@ -30,10 +30,6 @@ const menuList = [
         ]
     },
     {
-        title: '城市管理',
-        key: '/city'
-    },
-    {
         title: '订单管理',
         key: '/order',
         btnList: [
@@ -45,6 +41,10 @@ const menuList = [
     },
     {
         title: '员工管理',
+        key: '/workerManage'
+    },
+    {
+        title: '员工管理22',
         key: '/user'
     },
     {

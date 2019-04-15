@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import './detail.less';
 import Axios from '../../axios';
 import { Card } from 'antd';
+import Utils from '../../resource/utils';
+import BMapLib from '../../resource/GeoUtils'
+
 export default class Detail extends Component {
     constructor(props) {
         super(props);
@@ -29,21 +32,27 @@ export default class Detail extends Component {
                 }
             }
         }, true).then((res)=>{
+            this.renderMap(res.result);
             this.setState({
                 order_info:res.result,
                 start_location:res.result.geolocation_location[0],
                 end_location:res.result.geolocation_location[1]
             })
-            this.renderMap(res.result.geolocation_info);
-            // this.getGeolocation() 
         })
     }
 
     renderMap = (data) => {
         this.map = new window.BMap.Map("orderDetailMap"); // 创建地图实例  
         this.addMapControl(); //调用地图控件
-        this.drawBikeRoute(data) //调用行驶路线(mock数据里是这个'position_list'参数)
-        // this.drawServiceArea(result.area)
+        this.drawBikeRoute(data.geolocation_info) //调用行驶路线
+        // 搜索该区域范围的管理员
+        let worker = data.worker_info
+        for (let i = 0; i < worker.length; i++) {
+            if (data.bike_gc == worker[i].worker_service &&  this.getServiceArea(worker[i].worker_serviceArea, data.bike_local)) {
+                this.drawServiceArea(worker[i].worker_serviceArea)
+                this.getServiceLable(worker[i].worker_name, worker[i].worker_serviceArea[0])
+            }
+        }
     }
 
     // 添加地图控件
@@ -54,10 +63,6 @@ export default class Detail extends Component {
         // 平移缩放控件
         map.addControl(new window.BMap.NavigationControl({ anchor: window.BMAP_ANCHOR_TOP_RIGHT }));
         map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
-        // 改变缩略大小
-        setTimeout(()=>{
-            map.setZoom(13)
-        },1000)
     }
 
     // 绘制用户的行驶路线
@@ -94,7 +99,7 @@ export default class Detail extends Component {
                 // 定位到骑行位置中间
                 if (i == Math.ceil(positionList.length/2)-1) {
                     let middle = new window.BMap.Point(point.lng, point.lat)
-                    this.map.centerAndZoom(middle, 11);
+                    this.map.centerAndZoom(middle, 13);
                 }
                 // 计算骑行距离
                 if (i > 0) {
@@ -138,10 +143,48 @@ export default class Detail extends Component {
         // let pointPre = new window.BMap.Point(_this.params.geolocation_info[gc_length-1].lng, _this.params.geolocation_info[gc_length-1].lat);
         // let pointNow = new window.BMap.Point(data.position.lng, data.position.lat);
         let distancePoint = this.map.getDistance(new window.BMap.Point(pointPre, pointNow))
-        console.log(this.map.getDistance)
+        console.log(distancePoint)
         this.setState({
             distance: this.state.distance + distancePoint
         })
+    }
+
+    //计算是否区域内
+    getServiceArea = (area, data) => {
+        let p = new window.BMap.Point(data.lng, data.lat)
+        let areaPolygon = []
+        for (let i = 0; i < area.length; i++) {
+            let point = area[i];
+            areaPolygon.push(new window.BMap.Point(point.lng, point.lat));
+        }
+        var polygon = new window.BMap.Polygon(areaPolygon)
+        if(BMapLib.GeoUtils.isPointInPolygon(p,polygon)){
+            return true
+        }else{
+            return false
+        }
+    }
+
+    //区域内添加管理员名字
+    getServiceLable = (name, data) => {
+        var point = new window.BMap.Point(data.lng, data.lat);
+        var option = {
+            position : point,    // 指定文本标注所在的地理位置
+            offset : new window.BMap.Size(0,0)   //设置文本偏移量
+        }
+        var label = new window.BMap.Label(name, option);
+        label.setStyle({
+            color : "#1DA57A",
+            fontSize : "14px",
+            height : "30px",
+            lineHeight : "30px",
+            fontFamily:"微软雅黑",
+            padding:'0 20px',
+            borderRadius:'8px',
+            boxShadow:'0 2px 0 rgba(0, 0, 0, 0.015)',
+            border: '1px solid #000'
+        });
+        this.map.addOverlay(label);   
     }
 
     render() {
@@ -155,51 +198,61 @@ export default class Detail extends Component {
             <div className="detail">
                 <Card>
                     <div id="orderDetailMap" className="order-map"></div>
-                    <div className="detail-items">
-                        <div className="item-title">基础信息</div>
-                        <ul className="detail-form">
-                            <li>
-                                <div className="detail-form-left">车辆类别 :</div>
-                                <div className="detail-form-content">{companyConfig[info.bike_company]}</div>
-                            </li>
-                            <li>
-                                <div className="detail-form-left">车辆编号 :</div>
-                                <div className="detail-form-content">{info.bike_sn}</div>
-                            </li>
-                            <li>
-                                <div className="detail-form-left">用户姓名 :</div>
-                                <div className="detail-form-content">{info.bike_user}</div>
-                            </li>
-                            <li>
-                                <div className="detail-form-left">用户地址 :</div>
-                                <div className="detail-form-content">{info.user_address}</div>
-                            </li>
-                            <li>
-                                <div className="detail-form-left">手机号码 :</div>
-                                <div className="detail-form-content">{info.user_phone}</div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="detail-items">
-                        <div className="item-title">行驶轨迹</div>
-                        <ul className="detail-form">
-                            <li>
-                                <div className="detail-form-left">订单编号 :</div>
-                                <div className="detail-form-content">{info.id}</div>
-                            </li>
-                            <li>
-                                <div className="detail-form-left">行程起点 :</div>
-                                <div className="detail-form-content">{this.state.start_location}</div>
-                            </li>
-                            <li>
-                                <div className="detail-form-left">行程终点 :</div>
-                                <div className="detail-form-content">{this.state.end_location}</div>
-                            </li>
-                            <li>
-                                <div className="detail-form-left">行驶里程 :</div>
-                                <div className="detail-form-content">{this.state.distance}米</div>
-                            </li>
-                        </ul>
+                    <div className="detail-content">
+                        <div className="detail-content-items">
+                            <div className="item-title">基础信息</div>
+                            <ul className="detail-form">
+                                <li>
+                                    <div className="detail-form-left">车辆编号 :</div>
+                                    <div className="detail-form-content">{info.bike_sn}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">车辆类别 :</div>
+                                    <div className="detail-form-content">{companyConfig[info.bike_company]}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">用户姓名 :</div>
+                                    <div className="detail-form-content">{info.bike_user}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">用户地址 :</div>
+                                    <div className="detail-form-content">{info.user_address}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">手机号码 :</div>
+                                    <div className="detail-form-content">{info.user_phone}</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="detail-content-items">
+                            <div className="item-title">行驶轨迹</div>
+                            <ul className="detail-form">
+                                <li>
+                                    <div className="detail-form-left">订单编号 :</div>
+                                    <div className="detail-form-content">{info.id}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">行程起点 :</div>
+                                    <div className="detail-form-content">{this.state.start_location}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">行程终点 :</div>
+                                    <div className="detail-form-content">{this.state.end_location}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">开始时间 :</div>
+                                    <div className="detail-form-content">{Utils.formateDate(parseInt(info.start_time))}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">结束时间 :</div>
+                                    <div className="detail-form-content">{Utils.formateDate(parseInt(info.end_time))}</div>
+                                </li>
+                                <li>
+                                    <div className="detail-form-left">行驶里程 :</div>
+                                    <div className="detail-form-content">{this.state.distance}米</div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </Card>
             </div>

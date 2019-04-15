@@ -50,14 +50,14 @@ class ClientRes extends Component {
                                         required:true,
                                         message:'不能为空~'
                                     },
-                                    {
-                                        min:6,max:12,
-                                        message:'长度6-12位'
-                                    },
-                                    {
-                                        pattern:new RegExp('^\\w+$','g'),
-                                        message:'用户名必须为字母或者数字'
-                                    }
+                                    // {
+                                    //     min:6,max:12,
+                                    //     message:'长度6-12位'
+                                    // },
+                                    // {
+                                    //     pattern:new RegExp('^\\w+$','g'),
+                                    //     message:'用户名必须为字母或者数字'
+                                    // }
                                 ]
                             })(
                                 <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="userName" />

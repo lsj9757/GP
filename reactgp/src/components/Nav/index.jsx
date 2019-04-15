@@ -27,6 +27,9 @@ class Nav extends Component {
         this.setState({
             currentKey: key
         })
+
+        // 清除全局地图定时器
+        clearInterval(window.clearMapTimer)
     }
 
     componentWillMount() {
