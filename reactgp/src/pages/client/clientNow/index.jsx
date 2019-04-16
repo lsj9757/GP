@@ -221,8 +221,11 @@ class ClientNow extends Component {
         const { getFieldDecorator } = this.props.form;
         let companyConfig = {
             1 : '摩拜',
-            2 : 'OFO',
-            3 : '小蓝'
+            2 : '哈喽出行',
+            3 : '永安行',
+            4 : 'OFO小黄车',
+            5 : '青桔单车',
+            6 : '其它'
         }
         return (
             <div className="clientNow">
@@ -257,8 +260,11 @@ class ClientNow extends Component {
                                             placeholder="选择共享单车运营商"
                                         >
                                             <Option value={1}>摩拜</Option>
-                                            <Option value={2}>OFO</Option>
-                                            <Option value={3}>小蓝</Option>
+                                            <Option value={2}>哈喽出行</Option>
+                                            <Option value={3}>永安行</Option>
+                                            <Option value={4}>OFO小黄车</Option>
+                                            <Option value={5}>青桔单车</Option>
+                                            <Option value={6}>其它</Option>
                                         </Select>
                                     )
                                 }</FormItem>
@@ -270,10 +276,6 @@ class ClientNow extends Component {
                                                 {
                                                     required:true,
                                                     message:'不能为空~'
-                                                },
-                                                {
-                                                    pattern:new RegExp('^[0-9]{5,}$'),
-                                                    message:'车辆编号为至少5位的数字哦~'
                                                 }
                                             ]
                                         })(
@@ -288,7 +290,7 @@ class ClientNow extends Component {
                                     <div>当前位置 : {this.state.bike_gc}</div>
                                 </FormItem>
                                 <FormItem className="clientNow-Data">
-                                    <div>{companyConfig[this.state.bike_info.bike_company]}车辆编号 : {this.state.bike_info.bike_sn}</div>
+                                    <div>{companyConfig[this.state.bike_info.bike_company]} 编号 : {this.state.bike_info.bike_sn}</div>
                                 </FormItem>
                                 <FormItem className="clientNow-Data">
                                     <div>开始时间 : {Utils.formateDate(this.state.start_time, true)}</div>

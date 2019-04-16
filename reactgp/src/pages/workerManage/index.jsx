@@ -441,6 +441,41 @@ class WorkerForm extends Component{
                         </RadioGroup>
                     )}
                 </FormItem>
+                <FormItem label="手机号码" {...formItemLayout}>
+                    {
+                        worker_info && type=='detail'?worker_info.worker_phone:
+                        getFieldDecorator('worker_phone',{
+                            initialValue:worker_info.worker_phone,
+                            rules:[
+                                {
+                                    required:true,
+                                    message:'不能为空~'
+                                },
+                                {
+                                    pattern:new RegExp('^[1][3-8][0-9]{9}$'),
+                                    message:'手机号不规范哦~'
+                                }
+                            ]
+                        })(
+                            <Input type="text" placeholder="请输入手机号码"/>
+                        )
+                    }
+                </FormItem>
+                <FormItem label="生日" {...formItemLayout}>
+                    {
+                        worker_info && type=='detail'?worker_info.worker_birthday:
+                        getFieldDecorator('worker_birthday',{
+                            initialValue:Moment(worker_info.worker_birthday),
+                            rules: [
+                                {
+                                    required:true,
+                                    message:'不能为空~'
+                                },
+                            ]
+                        })(
+                        <DatePicker />
+                    )}
+                </FormItem>
                 <FormItem label="角色" {...formItemLayout}>
                     {
                         worker_info && type=='detail'?this.getRole(worker_info.worker_role):
@@ -462,45 +497,8 @@ class WorkerForm extends Component{
                         </Select>
                     )}
                 </FormItem>
-                <FormItem label="生日" {...formItemLayout}>
-                    {
-                        worker_info && type=='detail'?worker_info.worker_birthday:
-                        getFieldDecorator('worker_birthday',{
-                            initialValue:Moment(worker_info.worker_birthday),
-                            rules: [
-                                {
-                                    required:true,
-                                    message:'不能为空~'
-                                },
-                            ]
-                        })(
-                        <DatePicker />
-                    )}
-                </FormItem>
-                <FormItem label="手机号码" {...formItemLayout}>
-                    {
-                        worker_info && type=='detail'?worker_info.worker_phone:
-                        getFieldDecorator('worker_phone',{
-                            initialValue:worker_info.worker_phone,
-                            rules:[
-                                {
-                                    required:true,
-                                    message:'不能为空~'
-                                },
-                                {
-                                    pattern:new RegExp('^[1][3-8][0-9]{9}$'),
-                                    message:'手机号不规范哦~'
-                                }
-                            ]
-                        })(
-                            <Input type="text" placeholder="请输入手机号码"/>
-                        )
-                    }
-                </FormItem>
                 {
-                    this.props.type == 'detail' ? (
-                        <div style={{textAlign:'center',color: 'rgba(0, 0, 0, 0.85)'}}>管理区域 :</div>
-                    ) : (
+                    this.props.type == 'detail' ? '' : (
                         <div>
                             <div style={{textAlign:'center',color: 'rgba(0, 0, 0, 0.85)'}} className="ant-form-item-required">绘制管理区域 :</div>
                             <Button type="primary" onClick={this.drawService} style={{margin:'0 20px 0 50px'}}>绘制</Button>

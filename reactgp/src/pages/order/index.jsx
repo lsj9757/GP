@@ -27,8 +27,8 @@ export default class Order extends Component {
             label: '车辆类别',
             field:'bike_company',
             initialValue: 1,
-            width: 100,
-            list: [{ id: 1, name: '摩拜' }, { id: 2, name: 'OFO' }, { id: 3, name: '小蓝' }]
+            width: 120,
+            list: [{ id: 1, name: '摩拜' }, { id: 2, name: '哈喽出行' }, { id: 3, name: '永安行' }, { id: 4, name: 'OFO小黄车' }, { id: 5, name: '青桔单车'}, {id: 6, name: '其它'}]
         }
     ]
 
@@ -101,9 +101,12 @@ export default class Order extends Component {
                 dataIndex: 'bike_company',
                 render(state){
                     let config = {
-                        1:'摩拜',
-                        2:'OFO',
-                        3:'小蓝',
+                        1 : '摩拜',
+                        2 : '哈喽出行',
+                        3 : '永安行',
+                        4 : 'OFO小黄车',
+                        5 : '青桔单车',
+                        6 : '其它'
                     }
                     return config[state];
                 }

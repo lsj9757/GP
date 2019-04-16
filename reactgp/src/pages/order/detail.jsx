@@ -139,9 +139,6 @@ export default class Detail extends Component {
     }
 
     getDistance = (pointPre, pointNow) => {
-        // let gc_length = _this.params.geolocation_info.length
-        // let pointPre = new window.BMap.Point(_this.params.geolocation_info[gc_length-1].lng, _this.params.geolocation_info[gc_length-1].lat);
-        // let pointNow = new window.BMap.Point(data.position.lng, data.position.lat);
         let distancePoint = this.map.getDistance(new window.BMap.Point(pointPre, pointNow))
         console.log(distancePoint)
         this.setState({
@@ -191,8 +188,11 @@ export default class Detail extends Component {
         const info = this.state.order_info || {};
         let companyConfig = {
             1 : '摩拜',
-            2 : 'OFO',
-            3 : '小蓝'
+            2 : '哈喽出行',
+            3 : '永安行',
+            4 : 'OFO小黄车',
+            5 : '青桔单车',
+            6 : '其它'
         }
         return (
             <div className="detail">
@@ -247,10 +247,10 @@ export default class Detail extends Component {
                                     <div className="detail-form-left">结束时间 :</div>
                                     <div className="detail-form-content">{Utils.formateDate(parseInt(info.end_time))}</div>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <div className="detail-form-left">行驶里程 :</div>
                                     <div className="detail-form-content">{this.state.distance}米</div>
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
                     </div>

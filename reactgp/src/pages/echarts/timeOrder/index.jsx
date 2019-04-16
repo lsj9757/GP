@@ -14,7 +14,7 @@ import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/component/markPoint';
-export default class Line extends Component {
+export default class timeOrder extends Component {
 
     constructor(props) {
         super(props);
@@ -173,7 +173,7 @@ export default class Line extends Component {
 
     render(){
         return (
-            <div className="line">
+            <div className="timeOrder">
                <Card title="折线图表之一">
                     <ReactEcharts
                         option={this.getOption()}

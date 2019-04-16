@@ -8,7 +8,7 @@ const menuList = [
         key: '/login'
     },
     {
-        title: '用户',
+        title: '用户列表',
         key: './userManage'
     },
     {
@@ -44,28 +44,24 @@ const menuList = [
         key: '/workerManage'
     },
     {
-        title: '员工管理22',
-        key: '/user'
-    },
-    {
         title: '车辆地图',
         key: '/bikeMap'
     },
     {
-        title: '图标',
+        title: '数据统计',
         key: '/echarts',
         children: [
             {
-                title: '柱形图',
-                key: '/echarts/bar'
+                title: '各类单车订单分布',
+                key: '/echarts/bikeOrder'
             },
             {
-                title: '饼图',
-                key: '/echarts/pie'
+                title: '全国城市订单分布',
+                key: '/echarts/cityOrder'
             },
             {
-                title: '折线图',
-                key: '/echarts/line'
+                title: '订单时间分布折线',
+                key: '/echarts/timeOrder'
             },
         ]
     },
