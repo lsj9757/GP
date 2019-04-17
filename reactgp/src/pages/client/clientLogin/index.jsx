@@ -32,12 +32,16 @@ class ClientLogin extends Component {
         })
     }
 
+    handleRes = () => {
+        this.props.history.push({ pathname : '/client/clientRes' })
+    }
+
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
             <div className="clientLogin">
-                <img src="/assets/logo.jpg" alt="lsj"/>
-                <Form style={{paddingTop: '8rem'}}>
+                <img src="/assets/bg2.png" alt="lsj"/>
+                <Form style={{paddingTop: '4rem'}}>
                     <FormItem>
                         {
                              getFieldDecorator('user_name',{
@@ -72,7 +76,7 @@ class ClientLogin extends Component {
                         <Button style={{width:'100%'}} type="primary"  onClick={this.handleSubmit}>Login In</Button>
                     </FormItem>
                     <div className="clientLogin-rsgo">
-                        Or <a href="./clientRes">register now!</a>
+                        Or <a href="javascript:void(0);" onClick={this.handleRes}>register now!</a>
                     </div>
                 </Form>
             </div>

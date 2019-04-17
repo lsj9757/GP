@@ -49,11 +49,19 @@ export default class BikeMap extends Component {
 
     // 绘制车辆分布
     drawBikeList = (list) => {
-        let bikeIcon = new window.BMap.Icon("/assets/bike.png", new window.BMap.Size(40, 40), {
-            imageSize: new window.BMap.Size(40, 40),
-            anchor: new window.BMap.Size(20, 20)
-        });
+        let bikeconfig = {
+            1:'/assets/摩拜.png',
+            2:'/assets/哈喽出行.png',
+            3:'/assets/永安行.png',
+            4:'/assets/OFO小黄车.png',
+            5:'/assets/青桔单车.png',
+            6:'/assets/bike.png'
+        }
         for (let i = 0; i < list.length; i++) {
+            let bikeIcon = new window.BMap.Icon(bikeconfig[list[i].bike_company], new window.BMap.Size(40, 40), {
+                imageSize: new window.BMap.Size(40, 40),
+                anchor: new window.BMap.Size(20, 20)
+            });
             let point = list[i].bike_local
             let bikePoint = new window.BMap.Point(point.lng, point.lat);
             var bikeMarker = new window.BMap.Marker(bikePoint, { icon: bikeIcon });
@@ -68,8 +76,34 @@ export default class BikeMap extends Component {
         return (
             <div className="bikeMap">
                 <Card style={{marginTop:'0.8rem'}}>
-                    <div>共{this.state.total_count}辆车</div>
-                    <div id="bikeMap" style={{height:500}}></div>
+                    <div>
+                        <span>共{this.state.total_count}辆车</span>
+                        <span style={{margin:'0 20px'}}>
+                            <div style={{width:'30px', backgroundColor:'#C1232B', height:'12px', display:'inline-block', borderRadius:'10px', marginRight:'10px'}}></div>
+                            摩拜
+                        </span>
+                        <span style={{marginRight:'20px'}}>
+                            <div style={{width:'30px', backgroundColor:'#27727B', height:'12px', display:'inline-block', borderRadius:'10px', marginRight:'10px'}}></div>
+                            哈喽出行
+                        </span>
+                        <span style={{marginRight:'20px'}}>
+                            <div style={{width:'30px', backgroundColor:'#2bb5ce', height:'12px', display:'inline-block', borderRadius:'10px', marginRight:'10px'}}></div>
+                            永安行
+                        </span>
+                        <span style={{marginRight:'20px'}}>
+                            <div style={{width:'30px', backgroundColor:'#FCCE10', height:'12px', display:'inline-block', borderRadius:'10px', marginRight:'10px'}}></div>
+                            OFO小黄车
+                        </span>
+                        <span style={{marginRight:'20px'}}>
+                            <div style={{width:'30px', backgroundColor:'#E87C25', height:'12px', display:'inline-block', borderRadius:'10px', marginRight:'10px'}}></div>
+                            青桔单车
+                        </span>
+                        <span style={{marginRight:'20px'}}>
+                            <div style={{width:'30px', backgroundColor:'#FE8463', height:'12px', display:'inline-block', borderRadius:'10px', marginRight:'10px'}}></div>
+                            其它
+                        </span>
+                    </div>
+                    <div id="bikeMap" style={{height:500, marginTop:'20px'}}></div>
                 </Card>
             </div>
         )

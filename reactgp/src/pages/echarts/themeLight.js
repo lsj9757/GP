@@ -1,7 +1,7 @@
 var colorPalette = [
     '#C1232B',
     '#27727B',
-    '#B5C334',
+    '#2bb5ce',
     '#FCCE10',
     '#E87C25',
     '#FE8463',

@@ -18,10 +18,7 @@ export default class CityOrder extends Component {
 
     requestList = () => {
         Axios.ajax({
-            url:'/echarts/list',
-            data:{
-                params: this.params
-            }
+            url:'/echarts/list'
         }, true).then((res)=>{
             let cityArr = this.handleOrder(res.result.echarts_list)
             this.initMapDidMount(cityArr);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Button, Form, Input, Select, Radio, message, Modal, DatePicker, Table } from 'antd'
+import { Card, Button, Form, Input, Select, Radio, message, Modal, DatePicker, Table, Tag } from 'antd'
 import Utils from '../../resource/utils';
 import Axios from '../../axios/index';
 import Moment from 'moment'
@@ -187,6 +187,8 @@ export default class WorkerManage extends Component {
           }, {
             title: '角色',
             dataIndex: 'worker_role',
+            width: 130,
+            // align: 'center',
             render(role){
                 let config = {
                     1:'一级管理',
@@ -195,7 +197,14 @@ export default class WorkerManage extends Component {
                     4:'司机管理',
                     5:'五级管理'
                 }
-                return config[role];
+                let color = {
+                    1:'#C1232B',
+                    2:'#27727B',
+                    3:'#B5C334',
+                    4:'#FCCE10',
+                    5:'#E87C25',
+                }
+                return <span><Tag color={color[role]} key={role}>{config[role]}</Tag></span>;
             }
           },{
             title: '手机号码',

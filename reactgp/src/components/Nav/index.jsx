@@ -60,14 +60,12 @@ class Nav extends Component {
     render() {
         return (
             <div className="nav">
-                <div className="nav-logo">
-                    <img src="/assets/logo.jpg" alt="lsj"/>
-                    <h1>lsj</h1>
-                </div>
+                <div className="nav-logo"></div>
                 <Menu
+                    className="nav-menu"
+                    theme="dark"
                     onClick={this.handleClick}
                     selectedKeys={[this.state.currentKey]}
-                    theme="dark"
                 >
                     { this.state.menuTreeNode }
                 </Menu>

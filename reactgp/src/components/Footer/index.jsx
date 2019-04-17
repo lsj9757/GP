@@ -12,7 +12,7 @@ export default class Footer extends Component {
     render() {
         return (
             <div className="footer">
-                Footer
+                Copyright © 2019 lsj 201521091031 . All Rights Reserved
             </div>
         )
     }

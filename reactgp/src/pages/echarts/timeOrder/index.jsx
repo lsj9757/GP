@@ -3,6 +3,7 @@ import { Card } from 'antd'
 import ReactEcharts from 'echarts-for-react';
 import echartTheme from '../echartTheme'
 // import echarts from 'echarts'
+import Axios from '../../../axios/index';
 
 // 按需引入的方法
 // 引入 ECharts 主模块
@@ -25,112 +26,46 @@ export default class timeOrder extends Component {
 
     componentWillMount(){
         echarts.registerTheme('theme',echartTheme);
+        this.requestList()
     }
 
-    getOption() {
-        let option = {
-            title: {
-                text: '用户骑行订单'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            xAxis: {
-                data: [
-                    '周一',
-                    '周二',
-                    '周三',
-                    '周四',
-                    '周五',
-                    '周六',
-                    '周日'
-                ]
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [
-                {
-                    name: '订单量',
-                    type: 'line',
-                    data: [
-                        1000,
-                        2000,
-                        1500,
-                        3000,
-                        2000,
-                        1200,
-                        800
-                    ]
-                }
-            ]
+    requestList = () => {
+        Axios.ajax({
+            url:'/echarts/list'
+        }, true).then((res)=>{
+            let weekTimeArr = this.handleOrder(res.result.echarts_list,'week')
+            let monthTimeArr = this.handleOrder(res.result.echarts_list,'month')
+            this.setState({
+                weekTimeArr,
+                monthTimeArr
+            })
+        })
+    }
+
+    handleOrder = (data, type) => {
+        if (type == 'week') {
+            let timeArr = [0,0,0,0,0,0,0]
+            for (let i = 0; i < data.length; i++) {
+                let week = data[i].week_time
+                timeArr[week]++
+            }
+            return timeArr
         }
-        return option;
-    }
-
-    getOption2() {
-        let option = {
-            title: {
-                text: '用户骑行订单'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend:{
-                data:['OFO订单量','摩拜订单量']
-            },
-            xAxis: {
-                data: [
-                    '周一',
-                    '周二',
-                    '周三',
-                    '周四',
-                    '周五',
-                    '周六',
-                    '周日'
-                ]
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [
-                {
-                    name: 'OFO订单量',
-                    type: 'line',
-                    stack: 'OFO',
-                    data: [
-                        1200,
-                        3000,
-                        4500,
-                        6000,
-                        8000,
-                        12000,
-                        20000
-                    ]
-                },
-                {
-                    name: '摩拜订单量',
-                    type: 'line',
-                    stack: '摩拜',
-                    data: [
-                        1000,
-                        2000,
-                        5500,
-                        6000,
-                        8000,
-                        10000,
-                        12000
-                    ]
-                },
-            ]
+        if (type = 'month') {
+            let timeArr = [0,0,0,0,0,0,0,0,0,0,0,0]
+            for (let i = 0; i < data.length; i++) {
+                let week = new Date(parseInt(data[i].start_time)).getMonth()+1
+                timeArr[week]++
+            }
+            
+            return timeArr
         }
-        return option;
     }
 
-    getOption3() {
+    initWeekDidMount = (timeArr) => {
         let option = {
             title: {
-                text: '用户骑行订单'
+                text: '每周骑行订单数量变化'
             },
             tooltip: {
                 trigger: 'axis'
@@ -139,13 +74,13 @@ export default class timeOrder extends Component {
                 type:'category',
                 boundaryGap: true, // 默认填充到x的0刻度
                 data: [
+                    '周日',
                     '周一',
                     '周二',
                     '周三',
                     '周四',
                     '周五',
-                    '周六',
-                    '周日'
+                    '周六'
                 ]
             },
             yAxis: {
@@ -155,15 +90,48 @@ export default class timeOrder extends Component {
                 {
                     name: '订单量',
                     type: 'line',
-                    data: [
-                        1000,
-                        2000,
-                        1500,
-                        3000,
-                        2000,
-                        1200,
-                        800
-                    ],
+                    data: timeArr,
+                    areaStyle: {} // 区域填充样式
+                }
+            ]
+        }
+        return option;
+    }
+
+    initMonthDidMount = (timeArr) => {
+        let option = {
+            title: {
+                text: '各月骑行订单数量变化'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                type:'category',
+                boundaryGap: true, // 默认填充到x的0刻度
+                data: [
+                    '一月',
+                    '二月',
+                    '三月',
+                    '四月',
+                    '五月',
+                    '六月',
+                    '七月',
+                    '八月',
+                    '九月',
+                    '十月',
+                    '十一月',
+                    '十二月'
+                ]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '订单量',
+                    type: 'line',
+                    data: timeArr,
                     areaStyle: {} // 区域填充样式
                 }
             ]
@@ -174,9 +142,9 @@ export default class timeOrder extends Component {
     render(){
         return (
             <div className="timeOrder">
-               <Card title="折线图表之一">
+                <Card style={{marginTop:'0.8rem'}}>
                     <ReactEcharts
-                        option={this.getOption()}
+                        option={this.initWeekDidMount(this.state.weekTimeArr)}
                         theme="theme"
                         notMerge={true}
                         lazyUpdate={true}
@@ -184,19 +152,9 @@ export default class timeOrder extends Component {
                         height: 400
                     }}/>
                 </Card>
-                <Card title="折线图表之二" style={{marginTop:10}}>
+                <Card style={{marginTop:20}}>
                     <ReactEcharts
-                        option={this.getOption2()}
-                        theme="theme"
-                        notMerge={true}
-                        lazyUpdate={true}
-                        style={{
-                        height: 400
-                    }}/>
-                </Card>
-                <Card title="折线图表之三" style={{marginTop:10}}>
-                    <ReactEcharts
-                        option={this.getOption3()}
+                        option={this.initMonthDidMount(this.state.monthTimeArr)}
                         theme="theme"
                         notMerge={true}
                         lazyUpdate={true}

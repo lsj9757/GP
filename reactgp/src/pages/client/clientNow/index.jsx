@@ -184,7 +184,7 @@ class ClientNow extends Component {
                                 var address = result.regeocode.formattedAddress;
                                 _this.params.geolocation_location.push(address)
                             }else{
-                                console.log(result)                            }
+                                console.log('错误:'+ result)                            }
                         });
                     } else {
                         // 之后进入骑行模式需要根据定位刷新当前街道(这里用的高德api= =)
@@ -193,7 +193,7 @@ class ClientNow extends Component {
                                 var address = result.regeocode.formattedAddress;
                                 _this.params.geolocation_location[1] = address
                             }else{
-                                console.log(result)                            }
+                                console.log('错误:'+ result)                            }
                         });
                         //     var Bmap = new window.BMap.Map("container"); // 创建地图实例  
                         //     // 从第二次进入骑行模式时开始计算距离(这里用的百度api)

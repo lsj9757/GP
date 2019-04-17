@@ -31,10 +31,7 @@ export default class bikeOrder extends Component {
 
     requestList = () => {
         Axios.ajax({
-            url:'/echarts/list',
-            data:{
-                params: this.params
-            }
+            url:'/echarts/list'
         }, true).then((res)=>{
             let bikeOrderArr = this.handleOrder(res.result.echarts_list, 'order')
             let bikeTimeArr = this.handleOrder(res.result.echarts_list, 'time')
@@ -142,7 +139,7 @@ export default class bikeOrder extends Component {
     initTimeDidMount = (bikeArr) => {
         let option = {
             title: {
-                text: '用户各类单车骑行订单时间分布',
+                text: '用户各类单车骑行订单时长分布',
                 top: 40,
                 x: 'center'
             },
@@ -182,7 +179,7 @@ export default class bikeOrder extends Component {
     render(){
         return (
             <div className="bikeOrder">
-                <Card>
+                <Card style={{marginTop:'0.8rem'}}>
                     <ReactEcharts
                         option={this.initOrderDidMount(this.state.bikeOrderArr)}
                         theme="theme"

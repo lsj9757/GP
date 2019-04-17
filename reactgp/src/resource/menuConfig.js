@@ -4,40 +4,12 @@ const menuList = [
         key: '/home'
     },
     {
-        title: '登录',
-        key: '/login'
-    },
-    {
         title: '用户列表',
-        key: './userManage'
-    },
-    {
-        title: '客户',
-        key: '/client',
-        children: [
-            {
-                title: '登陆',
-                key: '/client/clientLogin'
-            },
-            {
-                title: '注册',
-                key: '/client/clientRes'
-            },
-            {
-                title: '折线图',
-                key: '/client/clientNow'
-            },
-        ]
+        key: '/userManage'
     },
     {
         title: '订单管理',
         key: '/order',
-        btnList: [
-            {
-                title: '订单详情',
-                key: 'detail'
-            }
-        ]
     },
     {
         title: '员工管理',
@@ -64,10 +36,6 @@ const menuList = [
                 key: '/echarts/timeOrder'
             },
         ]
-    },
-    {
-        title: '权限设置',
-        key: '/permission'
-    },
+    }
 ];
 export default menuList;

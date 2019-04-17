@@ -56,14 +56,12 @@ class Header extends Component {
         return (
             <div className="header">
                 <Row className="header-top">
-                    {
-                        menuType?
-                            <Col span={6} className="header-top-logo">
-                                <img src="/assets/logo.jpg" alt="lsj"/>
-                                <span>LSJ 通用管理系统</span>
-                            </Col>:''
-                    }
-                    <Col span={menuType?18:24}>
+                    <Col span={10} className="header-top-logo">
+                        <img src="/assets/logo.png" alt="lsj"/>
+                        <span>LSJ共享单车统计与管理系统</span>
+                        <img src="/assets/logologo.png" alt="lsj"/>
+                    </Col>
+                    <Col span={14}>
                         <span>你好，牛逼的{this.state.username}</span>
                         <a href="#">退出</a>  
                     </Col>
