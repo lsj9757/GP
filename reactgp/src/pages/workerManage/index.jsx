@@ -29,6 +29,7 @@ export default class WorkerManage extends Component {
     }
 
     requestList = ()=>{
+        let _this = this;
         Axios.ajax({
             url:'/worker/list',
             data:{
@@ -37,12 +38,12 @@ export default class WorkerManage extends Component {
                 }
             }
         }, true).then((res)=>{
-            let _this = this;
+            let list = res.result.worker_list.map((item, index) => {
+                item.key = index;
+                return item;
+            });
             this.setState({
-                worker_list:res.result.worker_list.map((item,index)=>{
-                    item.key=index
-                    return item;
-                }),
+                worker_list:list,
                 pagination:Utils.pagination(res,(current)=>{
                     _this.params.page = current;
                     _this.requestList();
