@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Button, Table, Modal} from 'antd'
+import { Card, Button, Table, Modal, message} from 'antd'
 import Utils from '../../resource/utils';
 import Axios from '../../axios/index';
 import Baseform from '../../components/Baseform'
@@ -40,6 +40,7 @@ export default class Order extends Component {
     handleFilter = (filterParams) => {
         this.params = filterParams;
         this.requestList();
+        message.success('查询成功')
         console.log(filterParams)
     }
 
@@ -82,7 +83,7 @@ export default class Order extends Component {
             })
             return;
         }
-        window.open(`/common/order/detail/${item.id}`,'_blank')
+        window.open(`/#/common/order/detail/${item.id}`,'_blank')
     }
 
     render() {

@@ -63,7 +63,7 @@ class Header extends Component {
                     </Col>
                     <Col span={14}>
                         <span>你好，牛逼的{this.state.username}</span>
-                        <a href="#">退出</a>  
+                        <a href="javascript:void(0);">退出</a>  
                     </Col>
                 </Row>
                 {

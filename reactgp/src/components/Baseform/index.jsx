@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Select, Form, Button, Checkbox, DatePicker} from 'antd'
+import { Input, Select, Form, Button, Checkbox, DatePicker, message} from 'antd'
 import Utils from '../../resource/utils';
 const FormItem = Form.Item;
 
@@ -12,7 +12,13 @@ class Baseform extends Component {
     }
     handleFilterSubmit = () => {
         let fieldsValue = this.props.form.getFieldsValue();
-        this.props.filterSubmit(fieldsValue);
+        this.props.form.validateFields((err,values)=>{ // 校验
+            if (!err) {
+                this.props.filterSubmit(fieldsValue);
+            } else {
+                message.warning(`输入有误~`)
+            }
+        })
     }
 
     reset = () => {
@@ -33,15 +39,29 @@ class Baseform extends Component {
                 if (item.type === '时间查询'){
                     const begin_time = <FormItem label="订单时间" key={'begin_time'}>
                         {
-                            getFieldDecorator('begin_time')(
+                            getFieldDecorator('begin_time',{
+                                rules: [
+                                    {
+                                        required:true,
+                                        message:'不能为空~'
+                                    },
+                                ]
+                            })(
                                 <DatePicker style={{ width: width }} showTime={true} placeholder={placeholder} format="YYYY-MM-DD HH:mm:ss"/>
                             )
                         }
                     </FormItem>;
                     formItemList.push(begin_time)
-                    const end_time = <FormItem label="~" colon={false} key={'end_time'}>
+                    const end_time = <FormItem label="~" colon={false} key={'end_time'} required={false}>
                         {
-                            getFieldDecorator('end_time')(
+                            getFieldDecorator('end_time',{
+                                rules: [
+                                    {
+                                        required:true,
+                                        message:'不能为空~'
+                                    },
+                                ]
+                            })(
                                 <DatePicker style={{ width: width }} showTime={true} placeholder={placeholder} format="YYYY-MM-DD HH:mm:ss" />
                             )
                         }

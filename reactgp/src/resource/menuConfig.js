@@ -1,39 +1,39 @@
 const menuList = [
     {
         title: '首页',
-        key: '/home'
+        key: '/admin/home'
     },
     {
         title: '用户列表',
-        key: '/userManage'
+        key: '/admin/userManage'
     },
     {
         title: '订单管理',
-        key: '/order',
+        key: '/admin/order',
     },
     {
         title: '员工管理',
-        key: '/workerManage'
+        key: '/admin/workerManage'
     },
     {
         title: '车辆地图',
-        key: '/bikeMap'
+        key: '/admin/bikeMap'
     },
     {
         title: '数据统计',
-        key: '/echarts',
+        key: '/admin/echarts',
         children: [
             {
                 title: '各类单车订单分布',
-                key: '/echarts/bikeOrder'
+                key: '/admin/echarts/bikeOrder'
             },
             {
                 title: '全国城市订单分布',
-                key: '/echarts/cityOrder'
+                key: '/admin/echarts/cityOrder'
             },
             {
                 title: '订单时间分布折线',
-                key: '/echarts/timeOrder'
+                key: '/admin/echarts/timeOrder'
             },
         ]
     }

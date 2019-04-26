@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Routers, Route, Switch, Redirect} from 'react-router-dom'
+import { HashRouter as Routers, Route, Switch, Redirect} from 'react-router-dom'
 import App from './App'
 import Admin from './admin'
 import Common from './common'
 import Client from './client'
 import Login from './pages/login'
+import Home from './pages/home'
 import Detail from './pages/order/detail'
 import Order from './pages/order'
 import BikeMap from './pages/bikeMap'
@@ -40,14 +41,15 @@ export default class Router extends Component {
               <Route path='/' render={()=>
                 <Admin>
                   <Switch>
-                    <Route path="/order" component={Order}></Route>
-                    <Route path="/userManage" component={UserManage}></Route>
-                    <Route path="/workerManage" component={WorkerManage}></Route>
-                    <Route path="/bikeMap" component={BikeMap}></Route>
-                    <Route path="/echarts/cityOrder" component={CityOrder}></Route>
-                    <Route path="/echarts/bikeOrder" component={BikeOrder}></Route>
-                    <Route path="/echarts/timeOrder" component={TimeOrder}></Route>
-                    <Redirect to="/home" />
+                    <Route path="/admin/home" component={Home}></Route>
+                    <Route path="/admin/order" component={Order}></Route>
+                    <Route path="/admin/userManage" component={UserManage}></Route>
+                    <Route path="/admin/workerManage" component={WorkerManage}></Route>
+                    <Route path="/admin/bikeMap" component={BikeMap}></Route>
+                    <Route path="/admin/echarts/cityOrder" component={CityOrder}></Route>
+                    <Route path="/admin/echarts/bikeOrder" component={BikeOrder}></Route>
+                    <Route path="/admin/echarts/timeOrder" component={TimeOrder}></Route>
+                    <Redirect to="/admin/home" />
                   </Switch>
                 </Admin>
               }></Route>
